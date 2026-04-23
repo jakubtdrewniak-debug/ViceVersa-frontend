@@ -6,6 +6,7 @@ export const Route = createFileRoute('/')({
 })
 
 
+// eslint-disable-next-line react-refresh/only-export-components
 function Dashboard() {
   return <div>
     <div className="p-8">
