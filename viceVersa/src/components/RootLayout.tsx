@@ -7,8 +7,7 @@ export const RootLayout = () => {
     <div className="min-h-screen bg-gray-100">
       <nav className="bg-white shadow-sm p-4 flex justify-between items-center">
         <div className="flex gap-4 font-bold">
-          <Link to="/dashboard" className="text-blue-600">Dashboard</Link>
-          <Link to="/create" className="text-gray-600">New Tournament</Link>
+          <Link to="/" className="text-blue-600">Dashboard</Link>
           <Link to="/history" className="text-gray-600">History</Link>
         </div>
 
