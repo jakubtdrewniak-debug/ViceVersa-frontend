@@ -1,5 +1,15 @@
 import './App.css'
 import {useAuth0} from "@auth0/auth0-react";
+import {createRouter, RouterProvider} from "@tanstack/react-router";
+import {routeTree} from "./routeTree.gen.ts";
+
+const router = createRouter({routeTree})
+
+declare module "@tanstack/react-router" {
+  interface Register {
+    router: typeof router
+  }
+}
 
 function App() {
   const {
@@ -7,37 +17,37 @@ function App() {
     isAuthenticated,
     error,
     loginWithRedirect: login,
-    logout: auth0Logout,
-    user,
   } = useAuth0();
 
   const signup = () =>
     login({authorizationParams: {screen_hint: "signup"}});
 
-  const logout = () =>
-    auth0Logout({logoutParams: {returnTo: window.location.origin}});
+  const logInUser = () => login();
 
-  if (isLoading) return "Loading...";
+  if (isLoading) return <div className="h-screen flex items-center justify-center">Loading ViceVersus</div>;
 
-  return isAuthenticated ? (
-    <>
-      <p>Logged in as {user?.email}</p>
+  if (error) return <div>Error: {error.message}</div>
 
-      <h1>User Profile</h1>
-
-      <pre>{JSON.stringify(user, null, 2)}</pre>
-
-      <button onClick={logout}>Logout</button>
-    </>
-  ) : (
-    <>
-      {error && <p>Error: {error.message}</p>}
-
-      <button onClick={signup}>Signup</button>
-
-      <button onClick={() => login()}>Login</button>
-    </>
-  );
+  if (!isAuthenticated) {
+    return (
+      <div className="flex h-screen flex-col items-center justify-center gap-4 bg-gray-50">
+        <h1 className="text-4xl font-bold">ViceVersus</h1>
+        <button
+          onClick={logInUser}
+          className="bg-blue-600 text-white px-4 py-2 rounded"
+        >
+          Log In
+        </button>
+        <button
+          onClick={signup}
+          className="bg-blue-600 text-white px-4 py-2 rounded"
+        >
+          Sign Up
+        </button>
+      </div>
+    )
+  }
+  return <RouterProvider router={router}/>
 }
 
 export default App
