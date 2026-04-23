@@ -11,6 +11,11 @@ export const RootLayout = () => {
           <Link to="/create" className="text-gray-600">New Tournament</Link>
           <Link to="/history" className="text-gray-600">History</Link>
         </div>
+
+        <h1 className="absolute left-1/2 -translate-x-1/2 text-xl font-bold z-0">
+          ViceVersus
+        </h1>
+
         <div className="flex items-center gap-4">
           <span className="text-sm text-gray-600">{user?.email}</span>
           <button
