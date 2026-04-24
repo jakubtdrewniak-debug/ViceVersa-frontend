@@ -1,5 +1,6 @@
 import {createFileRoute, Link} from '@tanstack/react-router'
 import {TournamentHistory} from "../components/TournamentHistory.tsx";
+import { MOCK_HISTORY} from "../lib/mockData.ts";
 
 export const Route = createFileRoute('/history')({
   component: TournamentHistoryRoute,
@@ -22,7 +23,7 @@ function TournamentHistoryRoute() {
           </Link>
         </div>
         <TournamentHistory
-          tournaments={[]}/>
+          tournaments={MOCK_HISTORY}/>
       </div>
     </div>
   )

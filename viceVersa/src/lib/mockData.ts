@@ -166,3 +166,25 @@ export const MOCK_HISTORY: PastTournament[] = [
     winner: MOCK_TEAMS[0] // Krusty Krab Crew won
   }
 ];
+
+
+export const MOCK_COMPLETED_TOURNAMENT: TournamentDetails = {
+  id: 'tourney_done_1', // Notice this matches the first ID in your MOCK_HISTORY array!
+  name: 'Bikini Bottom Rumble',
+  game: 'Nick All-Star Brawl 2',
+  status: 'Completed',
+  format: 'single-elimination',
+  entryType: 'solo',
+  participants: MOCK_SOLOS,
+  matches: [
+    { id: 'c_q1', tournamentId: 'tourney_done_1', round: 1, status: 'Completed', player1: MOCK_SOLOS[0], player2: MOCK_SOLOS[1], winnerId: MOCK_SOLOS[0].id, score: { p1: 3, p2: 1 } },
+    { id: 'c_q2', tournamentId: 'tourney_done_1', round: 1, status: 'Completed', player1: MOCK_SOLOS[2], player2: MOCK_SOLOS[3], winnerId: MOCK_SOLOS[3].id, score: { p1: 0, p2: 3 } },
+    { id: 'c_q3', tournamentId: 'tourney_done_1', round: 1, status: 'Completed', player1: MOCK_SOLOS[4], player2: MOCK_SOLOS[5], winnerId: MOCK_SOLOS[4].id, score: { p1: 3, p2: 2 } },
+    { id: 'c_q4', tournamentId: 'tourney_done_1', round: 1, status: 'Completed', player1: MOCK_SOLOS[6], player2: MOCK_SOLOS[7], winnerId: MOCK_SOLOS[7].id, score: { p1: 1, p2: 3 } },
+
+    { id: 'c_s1', tournamentId: 'tourney_done_1', round: 2, status: 'Completed', player1: MOCK_SOLOS[0], player2: MOCK_SOLOS[3], winnerId: MOCK_SOLOS[0].id, score: { p1: 3, p2: 2 } },
+    { id: 'c_s2', tournamentId: 'tourney_done_1', round: 2, status: 'Completed', player1: MOCK_SOLOS[4], player2: MOCK_SOLOS[7], winnerId: MOCK_SOLOS[7].id, score: { p1: 1, p2: 3 } },
+
+    { id: 'c_f1', tournamentId: 'tourney_done_1', round: 3, status: 'Completed', player1: MOCK_SOLOS[0], player2: MOCK_SOLOS[7], winnerId: MOCK_SOLOS[0].id, score: { p1: 3, p2: 0 } }
+  ]
+};

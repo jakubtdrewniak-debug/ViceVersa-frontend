@@ -1,18 +1,22 @@
 /* eslint-disable react-refresh/only-export-components */
 import { createFileRoute, Link } from '@tanstack/react-router'
 import { TournamentView } from '../../components/TournamentView'
-import { MOCK_LIVE_TOURNAMENT, MOCK_UPCOMING_TOURNAMENT } from '../../lib/mockData'
+import { MOCK_LIVE_TOURNAMENT, MOCK_UPCOMING_TOURNAMENT, MOCK_COMPLETED_TOURNAMENT } from '../../lib/mockData'
 
 export const Route = createFileRoute('/tournament/$tournamentId')({
   component: TournamentDetailRoute,
 })
 
+const ALL_T = [
+  MOCK_LIVE_TOURNAMENT,
+  MOCK_UPCOMING_TOURNAMENT,
+  MOCK_COMPLETED_TOURNAMENT
+]
+
 function TournamentDetailRoute() {
   const { tournamentId } = Route.useParams()
 
-  const data = tournamentId === MOCK_LIVE_TOURNAMENT.id
-    ? MOCK_LIVE_TOURNAMENT
-    : MOCK_UPCOMING_TOURNAMENT
+ const data = ALL_T.find(t => t.id === tournamentId) || MOCK_UPCOMING_TOURNAMENT
 
   return (
     <div className="min-h-screen bg-[#050505] text-white p-8 font-sans">

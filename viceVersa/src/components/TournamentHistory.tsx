@@ -38,7 +38,6 @@ export function TournamentHistory({tournaments, isLoading}: Props) {
   return (
     <div className="space-y-4">
       {tournaments.map((t) => (
-        // TODO add tournament route and tournament view component
         <Link
           key={t.id}
           to="/tournament/$tournamentId"
