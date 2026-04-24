@@ -18,7 +18,11 @@ export const RootLayout = () => {
         <div className="flex items-center gap-4">
           <span className="text-sm text-gray-600">{user?.email}</span>
           <button
-            onClick={()=> logout()}
+            onClick={() => logout({
+              logoutParams: {
+                returnTo: window.location.origin,
+              }
+            })}
             className="text-sm text-red-500 hover:underline"
           >
             Logout
