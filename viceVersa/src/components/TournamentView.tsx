@@ -1,28 +1,6 @@
 import { useState } from "react";
-import type { Participant } from "./CreateTournament.tsx";
 import { BracketTree } from "./BracketTree.tsx"; // Make sure this path is correct!
-
-export interface Match {
-  id: string
-  tournamentId: string | null
-  round: number
-  status: "Pending" | "In Progress" | "Completed"
-  player1: Participant | null
-  player2: Participant | null
-  winnerId?: string
-  score?: { p1: number; p2: number }
-}
-
-export interface TournamentDetails {
-  id: string
-  name: string
-  game: string
-  status: "Upcoming" | "Live" | "Completed"
-  format: string
-  entryType: "solo" | "team"
-  participants: Participant[]
-  matches: Match[]
-}
+import type { Participant, Match, TournamentDetails } from "../types";
 
 interface Props {
   tournament: TournamentDetails

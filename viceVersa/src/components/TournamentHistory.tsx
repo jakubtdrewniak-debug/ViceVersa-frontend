@@ -1,14 +1,5 @@
-import type {User} from "./CreateTournament.tsx";
 import {Link} from "@tanstack/react-router";
-
-export interface PastTournament {
-  id: string
-  name: string
-  game: string
-  dateCompleted: string
-  participantCount: number
-  winner: User
-}
+import type { User, PastTournament } from "../types";
 
 interface Props {
   tournaments: PastTournament[]

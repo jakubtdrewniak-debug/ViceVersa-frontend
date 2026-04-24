@@ -1,7 +1,8 @@
 import { createFileRoute, useNavigate } from '@tanstack/react-router'
 import { useState } from 'react'
 
-import { CreateTournament, type TournamentFormData } from '../components/CreateTournament'
+import { CreateTournament } from '../components/CreateTournament'
+import type { TournamentFormData } from '../types'
 
 export const Route = createFileRoute('/create')({
   component: CreateTournamentRoute,

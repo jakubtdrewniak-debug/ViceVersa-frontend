@@ -1,7 +1,5 @@
 import { useState } from 'react'
-import type {Match} from "./TournamentView.tsx";
-
-
+import type { Match } from "../types";
 
 interface Props {
   match: Match

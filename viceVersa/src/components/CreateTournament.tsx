@@ -1,27 +1,6 @@
 import { useState} from "react";
 import {useAuth0} from "@auth0/auth0-react";
-
-export interface User {
-  id: string;
-  name: string;
-  avatar?: string;
-}
-
-export interface Participant {
-  id: string;
-  name: string;
-  avatar?: string;
-  isTeam: boolean;
-  members: User[]
-}
-
-export interface TournamentFormData {
-  name: string
-  game: string
-  format: string
-  entryType: "solo" | "team"
-  participants: Participant[]
-}
+import type { User, Participant, TournamentFormData } from "../types";
 
 interface Props {
   onSubmit: (data: TournamentFormData) => void

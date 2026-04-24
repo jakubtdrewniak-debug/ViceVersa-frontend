@@ -1,8 +1,13 @@
-/* eslint-disable react-refresh/only-export-components */
-import { createFileRoute, Link, useNavigate } from '@tanstack/react-router'
+import { createFileRoute, useNavigate } from '@tanstack/react-router'
 import { MatchView } from '../../components/MatchView'
-import { MOCK_LIVE_TOURNAMENT } from '../../lib/mockData'
 import { useState } from 'react'
+import {
+  MOCK_LIVE_TOURNAMENT,
+  MOCK_COMPLETED_TOURNAMENT,
+  MOCK_MY_MATCHES
+} from '../../lib/mockData'
+import type { Match, TournamentDetails } from '../../types';
+
 
 export const Route = createFileRoute('/match/$matchId')({
   component: MatchRoute,
@@ -13,45 +18,70 @@ function MatchRoute() {
   const navigate = useNavigate()
   const [isSubmitting, setIsSubmitting] = useState(false)
 
-  const matchData = MOCK_LIVE_TOURNAMENT.matches.find(m => m.id === matchId)
+  const tournamentPool: (TournamentDetails | null)[] = [
+    MOCK_LIVE_TOURNAMENT,
+    MOCK_COMPLETED_TOURNAMENT
+  ]
 
-  const handleResultSubmit = async (winnerId: string, finalScore: { p1: number, p2: number }) => {
+  let matchData: Match | undefined = undefined
+
+  for (const tourney of tournamentPool) {
+    if (tourney?.matches) {
+      const found = tourney.matches.find(
+        (m: Match) => m.id.toString() === matchId
+      )
+      if (found) {
+        matchData = found
+        break
+      }
+    }
+  }
+
+  if (!matchData) {
+    matchData = MOCK_MY_MATCHES.find(
+      (m) => m.id.toString() === matchId
+    )
+  }
+
+  const handleResultSubmit = async (winnerId: string | null, finalScore: { p1: number, p2: number }) => {
     if (!matchData) return
-
     setIsSubmitting(true)
-    console.log(`Match ${matchId} Result: Winner ${winnerId}, Score: ${finalScore.p1}-${finalScore.p2}`)
 
-    await new Promise(resolve => setTimeout(resolve, 1000))
+    // Type-safe updates
+    matchData.winnerId = winnerId ?? undefined
+    matchData.score = finalScore
+    matchData.status = 'Completed'
 
-    navigate({ to: `/tournament/${matchData.tournamentId}` })
+    await new Promise(resolve => setTimeout(resolve, 800))
+
+    if (matchData.tournamentId) {
+      navigate({ to: `/tournament/${matchData.tournamentId}` })
+    } else {
+      navigate({ to: '/my-history' })
+    }
   }
 
   if (!matchData) {
     return (
-      <div className="min-h-screen bg-[#050505] text-white flex items-center justify-center">
-        <p>Match not found.</p>
+      <div className="min-h-screen bg-[#050505] text-white flex items-center justify-center font-sans">
+        <div className="bg-[#1a1d24] p-10 rounded-2xl border border-red-900/50 text-center">
+          <h2 className="text-xl font-black text-red-500 mb-2">Match Not Found</h2>
+          <p className="text-gray-500 mb-6">ID: {matchId}</p>
+          <button onClick={() => window.history.back()} className="text-pink-500 font-bold hover:underline">
+            Go Back
+          </button>
+        </div>
       </div>
     )
   }
 
   return (
     <div className="min-h-screen bg-[#050505] flex flex-col items-center justify-center p-6">
-
-      <div className="w-full max-w-3xl mb-6">
-        <Link
-          to={ "/tournament/" + matchData.tournamentId}
-          className="text-pink-500 hover:text-pink-400 font-bold text-sm tracking-widest uppercase inline-block transition-colors"
-        >
-          ← Back to Bracket
-        </Link>
-      </div>
-
       <MatchView
         match={matchData}
         onSubmitResult={handleResultSubmit}
         isSubmitting={isSubmitting}
       />
-
     </div>
   )
 }

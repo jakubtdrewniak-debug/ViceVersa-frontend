@@ -1,11 +1,6 @@
 import { useState, useEffect } from "react";
 import { useAuth0 } from "@auth0/auth0-react";
-import type {User} from "./CreateTournament.tsx";
-
-export interface TeamFormData {
-  name: string;
-  members: User[];
-}
+import type { User, TeamFormData } from "../types";
 
 interface Props {
   onSubmit: (data: TeamFormData) => void;

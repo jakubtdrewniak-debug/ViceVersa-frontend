@@ -1,6 +1,4 @@
-import type {Participant, User} from "../components/CreateTournament";
-import type {TournamentDetails, Match} from "../components/TournamentView";
-import type {PastTournament} from "../components/TournamentHistory";
+import type { Participant, User, TournamentDetails, Match, PastTournament, PersonalMatch } from "../types";
 
 export const MOCK_USERS: User[] = [
   {id: 'u_1', name: 'SpongeBob', avatar: 'https://api.dicebear.com/7.x/avataaars/svg?seed=SpongeBob'},
@@ -188,3 +186,45 @@ export const MOCK_COMPLETED_TOURNAMENT: TournamentDetails = {
     { id: 'c_f1', tournamentId: 'tourney_done_1', round: 3, status: 'Completed', player1: MOCK_SOLOS[0], player2: MOCK_SOLOS[7], winnerId: MOCK_SOLOS[0].id, score: { p1: 3, p2: 0 } }
   ]
 };
+
+export const MOCK_MY_MATCHES: PersonalMatch[] = [
+  {
+    id: 'm_1',
+    tournamentId: 'tourney_done_1',
+    tournamentName: 'Bikini Bottom Rumble',
+    round: 3,
+    date: 'Mar 12, 2024',
+    status: 'Completed',
+    player1: MOCK_SOLOS[0], // SpongeBob (The User)
+    player2: MOCK_SOLOS[7], // Jake
+    winnerId: MOCK_SOLOS[0].id,
+    score: { p1: 3, p2: 0 },
+    result: 'win'
+  },
+  {
+    id: 'm_2',
+    tournamentId: 'tourney_mega_1',
+    tournamentName: 'Global Smash Masters',
+    round: 2,
+    date: 'Mar 10, 2024',
+    status: 'Completed',
+    player1: MOCK_SOLOS[0],
+    player2: MOCK_SOLOS[3],
+    winnerId: MOCK_SOLOS[3].id,
+    score: { p1: 2, p2: 3 },
+    result: 'loss'
+  },
+  {
+    id: 'ex_1',
+    tournamentId: null,
+    tournamentName: 'Exhibition',
+    round: 1,
+    date: 'Mar 05, 2024',
+    status: 'Completed',
+    player1: MOCK_SOLOS[0],
+    player2: MOCK_SOLOS[4],
+    winnerId: null,
+    score: { p1: 2, p2: 2 },
+    result: 'draw'
+  }
+];

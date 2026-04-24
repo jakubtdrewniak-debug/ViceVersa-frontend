@@ -9,16 +9,40 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
+import { Route as TeamsRouteImport } from './routes/teams'
+import { Route as ProfileRouteImport } from './routes/profile'
+import { Route as MyHistoryRouteImport } from './routes/my-history'
 import { Route as HistoryRouteImport } from './routes/history'
+import { Route as GamesRouteImport } from './routes/games'
 import { Route as CreateTeamRouteImport } from './routes/create-team'
 import { Route as CreateRouteImport } from './routes/create'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as TournamentTournamentIdRouteImport } from './routes/tournament/$tournamentId'
 import { Route as MatchMatchIdRouteImport } from './routes/match/$matchId'
 
+const TeamsRoute = TeamsRouteImport.update({
+  id: '/teams',
+  path: '/teams',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ProfileRoute = ProfileRouteImport.update({
+  id: '/profile',
+  path: '/profile',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const MyHistoryRoute = MyHistoryRouteImport.update({
+  id: '/my-history',
+  path: '/my-history',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const HistoryRoute = HistoryRouteImport.update({
   id: '/history',
   path: '/history',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const GamesRoute = GamesRouteImport.update({
+  id: '/games',
+  path: '/games',
   getParentRoute: () => rootRouteImport,
 } as any)
 const CreateTeamRoute = CreateTeamRouteImport.update({
@@ -51,7 +75,11 @@ export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/create': typeof CreateRoute
   '/create-team': typeof CreateTeamRoute
+  '/games': typeof GamesRoute
   '/history': typeof HistoryRoute
+  '/my-history': typeof MyHistoryRoute
+  '/profile': typeof ProfileRoute
+  '/teams': typeof TeamsRoute
   '/match/$matchId': typeof MatchMatchIdRoute
   '/tournament/$tournamentId': typeof TournamentTournamentIdRoute
 }
@@ -59,7 +87,11 @@ export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/create': typeof CreateRoute
   '/create-team': typeof CreateTeamRoute
+  '/games': typeof GamesRoute
   '/history': typeof HistoryRoute
+  '/my-history': typeof MyHistoryRoute
+  '/profile': typeof ProfileRoute
+  '/teams': typeof TeamsRoute
   '/match/$matchId': typeof MatchMatchIdRoute
   '/tournament/$tournamentId': typeof TournamentTournamentIdRoute
 }
@@ -68,7 +100,11 @@ export interface FileRoutesById {
   '/': typeof IndexRoute
   '/create': typeof CreateRoute
   '/create-team': typeof CreateTeamRoute
+  '/games': typeof GamesRoute
   '/history': typeof HistoryRoute
+  '/my-history': typeof MyHistoryRoute
+  '/profile': typeof ProfileRoute
+  '/teams': typeof TeamsRoute
   '/match/$matchId': typeof MatchMatchIdRoute
   '/tournament/$tournamentId': typeof TournamentTournamentIdRoute
 }
@@ -78,7 +114,11 @@ export interface FileRouteTypes {
     | '/'
     | '/create'
     | '/create-team'
+    | '/games'
     | '/history'
+    | '/my-history'
+    | '/profile'
+    | '/teams'
     | '/match/$matchId'
     | '/tournament/$tournamentId'
   fileRoutesByTo: FileRoutesByTo
@@ -86,7 +126,11 @@ export interface FileRouteTypes {
     | '/'
     | '/create'
     | '/create-team'
+    | '/games'
     | '/history'
+    | '/my-history'
+    | '/profile'
+    | '/teams'
     | '/match/$matchId'
     | '/tournament/$tournamentId'
   id:
@@ -94,7 +138,11 @@ export interface FileRouteTypes {
     | '/'
     | '/create'
     | '/create-team'
+    | '/games'
     | '/history'
+    | '/my-history'
+    | '/profile'
+    | '/teams'
     | '/match/$matchId'
     | '/tournament/$tournamentId'
   fileRoutesById: FileRoutesById
@@ -103,18 +151,50 @@ export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   CreateRoute: typeof CreateRoute
   CreateTeamRoute: typeof CreateTeamRoute
+  GamesRoute: typeof GamesRoute
   HistoryRoute: typeof HistoryRoute
+  MyHistoryRoute: typeof MyHistoryRoute
+  ProfileRoute: typeof ProfileRoute
+  TeamsRoute: typeof TeamsRoute
   MatchMatchIdRoute: typeof MatchMatchIdRoute
   TournamentTournamentIdRoute: typeof TournamentTournamentIdRoute
 }
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
+    '/teams': {
+      id: '/teams'
+      path: '/teams'
+      fullPath: '/teams'
+      preLoaderRoute: typeof TeamsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/profile': {
+      id: '/profile'
+      path: '/profile'
+      fullPath: '/profile'
+      preLoaderRoute: typeof ProfileRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/my-history': {
+      id: '/my-history'
+      path: '/my-history'
+      fullPath: '/my-history'
+      preLoaderRoute: typeof MyHistoryRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/history': {
       id: '/history'
       path: '/history'
       fullPath: '/history'
       preLoaderRoute: typeof HistoryRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/games': {
+      id: '/games'
+      path: '/games'
+      fullPath: '/games'
+      preLoaderRoute: typeof GamesRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/create-team': {
@@ -159,7 +239,11 @@ const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   CreateRoute: CreateRoute,
   CreateTeamRoute: CreateTeamRoute,
+  GamesRoute: GamesRoute,
   HistoryRoute: HistoryRoute,
+  MyHistoryRoute: MyHistoryRoute,
+  ProfileRoute: ProfileRoute,
+  TeamsRoute: TeamsRoute,
   MatchMatchIdRoute: MatchMatchIdRoute,
   TournamentTournamentIdRoute: TournamentTournamentIdRoute,
 }

@@ -1,5 +1,5 @@
 import { Link } from '@tanstack/react-router'
-import type {Match} from './TournamentView'
+import type { Match } from '../types'
 
 interface Props {
   matches: Match[]
