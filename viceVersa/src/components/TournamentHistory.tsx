@@ -1,5 +1,5 @@
 import {Link} from "@tanstack/react-router";
-import type { User, PastTournament } from "../types";
+import type { PastTournament } from "../types";
 
 interface Props {
   tournaments: PastTournament[]

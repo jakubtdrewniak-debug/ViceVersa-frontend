@@ -23,11 +23,12 @@ export interface TournamentFormData {
 export interface Match {
   id: string;
   tournamentId: string | null;
-  round: number;
+  round: number | null;
+  date: string;
   status: "Pending" | "In Progress" | "Completed";
   player1: Participant | null;
   player2: Participant | null;
-  winnerId?: string | null;
+  winner?: Participant | null;
   score?: { p1: number; p2: number };
 }
 
@@ -48,7 +49,7 @@ export interface PastTournament {
   game: string;
   dateCompleted: string;
   participantCount: number;
-  winner: User;
+  winner: Participant;
 }
 
 export interface TeamFormData {
@@ -56,8 +57,4 @@ export interface TeamFormData {
   members: User[];
 }
 
-export interface PersonalMatch extends Match {
-  tournamentName: string;
-  date: string;
-  result: "win" | "loss" | "draw";
-}
+

@@ -34,6 +34,12 @@ function Dashboard() {
             + New Team
           </Link>
           <Link
+            to="/create-match"
+            className="bg-blue-600 hover:bg-blue-500 text-white px-6 py-3 rounded-lg font-bold transition-all shadow-[0_0_15px_rgba(37,99,235,0.3)] flex items-center gap-2"
+          >
+            ⚔️ Create Match
+          </Link>
+          <Link
             to="/create"
             className="bg-pink-600 hover:bg-pink-500 text-white px-5 py-3 rounded-lg font-bold transition-colors shadow-[0_0_15px_rgba(219,39,119,0.3)]"
           >

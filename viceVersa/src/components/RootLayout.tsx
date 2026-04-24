@@ -35,6 +35,7 @@ export const RootLayout = () => {
               </Link>
               <Link
                 to="/history"
+                search={{ filter: "all" }}
                 className="text-gray-400 hover:text-white transition-colors [&.active]:text-pink-500"
               >
                 History
@@ -90,6 +91,13 @@ export const RootLayout = () => {
                     className="px-4 py-2.5 text-sm font-medium text-gray-300 hover:bg-[#2a2d35] hover:text-white transition-colors flex items-center gap-3"
                   >
                     🎮 My Games
+                  </Link>
+                  <Link
+                    to="/history"
+                    search={{ filter: "myTournaments" }}
+                    className="block px-4 py-2 text-sm text-gray-300 hover:bg-gray-800 hover:text-white"
+                  >
+                    🏆 My Tournaments
                   </Link>
                   <Link
                     to="/my-history"

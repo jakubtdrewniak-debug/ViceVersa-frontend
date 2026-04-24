@@ -1,4 +1,4 @@
-import type { Participant, User, TournamentDetails, Match, PastTournament, PersonalMatch } from "../types";
+import type { Participant, User, TournamentDetails, Match, PastTournament} from "../types";
 
 export const MOCK_USERS: User[] = [
   {id: 'u_1', name: 'SpongeBob', avatar: 'https://api.dicebear.com/7.x/avataaars/svg?seed=SpongeBob'},
@@ -175,56 +175,50 @@ export const MOCK_COMPLETED_TOURNAMENT: TournamentDetails = {
   entryType: 'solo',
   participants: MOCK_SOLOS,
   matches: [
-    { id: 'c_q1', tournamentId: 'tourney_done_1', round: 1, status: 'Completed', player1: MOCK_SOLOS[0], player2: MOCK_SOLOS[1], winnerId: MOCK_SOLOS[0].id, score: { p1: 3, p2: 1 } },
-    { id: 'c_q2', tournamentId: 'tourney_done_1', round: 1, status: 'Completed', player1: MOCK_SOLOS[2], player2: MOCK_SOLOS[3], winnerId: MOCK_SOLOS[3].id, score: { p1: 0, p2: 3 } },
-    { id: 'c_q3', tournamentId: 'tourney_done_1', round: 1, status: 'Completed', player1: MOCK_SOLOS[4], player2: MOCK_SOLOS[5], winnerId: MOCK_SOLOS[4].id, score: { p1: 3, p2: 2 } },
-    { id: 'c_q4', tournamentId: 'tourney_done_1', round: 1, status: 'Completed', player1: MOCK_SOLOS[6], player2: MOCK_SOLOS[7], winnerId: MOCK_SOLOS[7].id, score: { p1: 1, p2: 3 } },
+    { id: 'c_q1', tournamentId: 'tourney_done_1', round: 1, date: 'Mar 12, 2024', status: 'Completed', player1: MOCK_SOLOS[0], player2: MOCK_SOLOS[1], winner: MOCK_SOLOS[0], score: { p1: 3, p2: 1 } },
+    { id: 'c_q2', tournamentId: 'tourney_done_1', round: 1, date: 'Mar 12, 2024', status: 'Completed', player1: MOCK_SOLOS[2], player2: MOCK_SOLOS[3], winner: MOCK_SOLOS[3], score: { p1: 0, p2: 3 } },
+    { id: 'c_q3', tournamentId: 'tourney_done_1', round: 1, date: 'Mar 12, 2024', status: 'Completed', player1: MOCK_SOLOS[4], player2: MOCK_SOLOS[5], winner: MOCK_SOLOS[4], score: { p1: 3, p2: 2 } },
+    { id: 'c_q4', tournamentId: 'tourney_done_1', round: 1, date: 'Mar 12, 2024', status: 'Completed', player1: MOCK_SOLOS[6], player2: MOCK_SOLOS[7], winner: MOCK_SOLOS[7], score: { p1: 1, p2: 3 } },
 
-    { id: 'c_s1', tournamentId: 'tourney_done_1', round: 2, status: 'Completed', player1: MOCK_SOLOS[0], player2: MOCK_SOLOS[3], winnerId: MOCK_SOLOS[0].id, score: { p1: 3, p2: 2 } },
-    { id: 'c_s2', tournamentId: 'tourney_done_1', round: 2, status: 'Completed', player1: MOCK_SOLOS[4], player2: MOCK_SOLOS[7], winnerId: MOCK_SOLOS[7].id, score: { p1: 1, p2: 3 } },
+    { id: 'c_s1', tournamentId: 'tourney_done_1', round: 2, date: 'Mar 12, 2024', status: 'Completed', player1: MOCK_SOLOS[0], player2: MOCK_SOLOS[3], winner: MOCK_SOLOS[0], score: { p1: 3, p2: 2 } },
+    { id: 'c_s2', tournamentId: 'tourney_done_1', round: 2, date: 'Mar 12, 2024', status: 'Completed', player1: MOCK_SOLOS[4], player2: MOCK_SOLOS[7], winner: MOCK_SOLOS[7], score: { p1: 1, p2: 3 } },
 
-    { id: 'c_f1', tournamentId: 'tourney_done_1', round: 3, status: 'Completed', player1: MOCK_SOLOS[0], player2: MOCK_SOLOS[7], winnerId: MOCK_SOLOS[0].id, score: { p1: 3, p2: 0 } }
+    { id: 'c_f1', tournamentId: 'tourney_done_1', round: 3, date: 'Mar 12, 2024', status: 'Completed', player1: MOCK_SOLOS[0], player2: MOCK_SOLOS[7], winner: MOCK_SOLOS[0], score: { p1: 3, p2: 0 } }
   ]
 };
 
-export const MOCK_MY_MATCHES: PersonalMatch[] = [
+export const MOCK_MY_MATCHES: Match[] = [
   {
     id: 'm_1',
     tournamentId: 'tourney_done_1',
-    tournamentName: 'Bikini Bottom Rumble',
     round: 3,
     date: 'Mar 12, 2024',
     status: 'Completed',
     player1: MOCK_SOLOS[0], // SpongeBob (The User)
     player2: MOCK_SOLOS[7], // Jake
-    winnerId: MOCK_SOLOS[0].id,
+    winner: MOCK_SOLOS[0],
     score: { p1: 3, p2: 0 },
-    result: 'win'
   },
   {
     id: 'm_2',
     tournamentId: 'tourney_mega_1',
-    tournamentName: 'Global Smash Masters',
     round: 2,
     date: 'Mar 10, 2024',
     status: 'Completed',
     player1: MOCK_SOLOS[0],
     player2: MOCK_SOLOS[3],
-    winnerId: MOCK_SOLOS[3].id,
+    winner: MOCK_SOLOS[3],
     score: { p1: 2, p2: 3 },
-    result: 'loss'
   },
   {
     id: 'ex_1',
     tournamentId: null,
-    tournamentName: 'Exhibition',
     round: 1,
     date: 'Mar 05, 2024',
     status: 'Completed',
     player1: MOCK_SOLOS[0],
     player2: MOCK_SOLOS[4],
-    winnerId: null,
+    winner: null,
     score: { p1: 2, p2: 2 },
-    result: 'draw'
   }
 ];

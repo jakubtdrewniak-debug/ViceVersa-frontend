@@ -6,13 +6,13 @@ import {
   MOCK_COMPLETED_TOURNAMENT,
   MOCK_MY_MATCHES
 } from '../../lib/mockData'
-import type { Match, TournamentDetails } from '../../types';
-
+import type { Match, Participant, TournamentDetails } from '../../types'
 
 export const Route = createFileRoute('/match/$matchId')({
   component: MatchRoute,
 })
 
+// eslint-disable-next-line react-refresh/only-export-components
 function MatchRoute() {
   const { matchId } = Route.useParams()
   const navigate = useNavigate()
@@ -39,23 +39,31 @@ function MatchRoute() {
 
   if (!matchData) {
     matchData = MOCK_MY_MATCHES.find(
-      (m) => m.id.toString() === matchId
+      (m: Match) => m.id.toString() === matchId
     )
   }
 
-  const handleResultSubmit = async (winnerId: string | null, finalScore: { p1: number, p2: number }) => {
-    if (!matchData) return
+  const handleResultSubmit = async (winner: Participant | null, finalScore: { p1: number, p2: number }) => {
     setIsSubmitting(true)
 
-    // Type-safe updates
-    matchData.winnerId = winnerId ?? undefined
-    matchData.score = finalScore
-    matchData.status = 'Completed'
+    const allMatches = [
+      ...(MOCK_LIVE_TOURNAMENT?.matches || []),
+      ...(MOCK_COMPLETED_TOURNAMENT?.matches || []),
+      ...(MOCK_MY_MATCHES || [])
+    ]
+
+    const targetMatch = allMatches.find((m: Match) => m.id.toString() === matchId)
+
+    if (targetMatch) {
+      targetMatch.winner = winner ?? null
+      targetMatch.score = finalScore
+      targetMatch.status = 'Completed'
+    }
 
     await new Promise(resolve => setTimeout(resolve, 800))
 
-    if (matchData.tournamentId) {
-      navigate({ to: `/tournament/${matchData.tournamentId}` })
+    if (targetMatch?.tournamentId) {
+      navigate({ to: `/tournament/${targetMatch.tournamentId}` })
     } else {
       navigate({ to: '/my-history' })
     }
