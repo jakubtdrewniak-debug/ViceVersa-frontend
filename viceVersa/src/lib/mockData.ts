@@ -19,27 +19,50 @@ export const MOCK_SOLOS: Participant[] = MOCK_USERS.map(u => ({
   members: [u]
 }));
 
+export const MOCK_CAPTAIN: User = {
+  id: 'dev_acc_1',
+  name: "sponge@email.com",
+  email: "sponge@email.com",
+  avatar: 'https://api.dicebear.com/7.x/avataaars/svg?seed=Sponge'
+
+}
+
+export const ADMIN_EMAIL = "veryseriousadmin@yesyes.com"
+
 export const MOCK_TEAMS: Participant[] = [
+  {
+    id: 'team_user_owned',
+    name: 'Bikini Bottom Ballers',
+    isTeam: true,
+    captain: MOCK_CAPTAIN,
+    members: [
+      MOCK_CAPTAIN,
+      MOCK_SOLOS[1],
+    ],
+  },
   {
     id: 't_1',
     name: 'Krusty Krab Crew',
     isTeam: true,
     avatar: 'https://api.dicebear.com/7.x/initials/svg?seed=KKC',
-    members: [MOCK_USERS[0], MOCK_USERS[1]] // SpongeBob & Patrick
+    members: [MOCK_USERS[0], MOCK_USERS[1]],
+    captain: MOCK_USERS[0]
   },
   {
     id: 't_2',
     name: 'Looney Tunes',
     isTeam: true,
     avatar: 'https://api.dicebear.com/7.x/initials/svg?seed=LT',
-    members: [MOCK_USERS[2], MOCK_USERS[3]] // Bugs & Daffy
+    members: [MOCK_USERS[2], MOCK_USERS[3]],
+    captain: MOCK_USERS[2]
   },
   {
     id: 't_3',
     name: 'Treehouse Bros',
     isTeam: true,
     avatar: 'https://api.dicebear.com/7.x/initials/svg?seed=TB',
-    members: [MOCK_USERS[6], MOCK_USERS[7]] // Finn & Jake
+    members: [MOCK_USERS[6], MOCK_USERS[7]],
+    captain: MOCK_USERS[7]
   },
 ];
 

@@ -2,6 +2,7 @@ export interface User {
   id: string;
   name: string;
   avatar?: string;
+  email?: string;
 }
 
 export interface Participant {
@@ -10,6 +11,7 @@ export interface Participant {
   avatar?: string;
   isTeam: boolean;
   members: User[];
+  captain?: User;
 }
 
 export interface TournamentFormData {
@@ -56,5 +58,10 @@ export interface TeamFormData {
   name: string;
   members: User[];
 }
+
+export type HistorySearch = {
+  filter?: 'all' | 'myTournaments'
+}
+
 
 

@@ -9,7 +9,10 @@ createRoot(document.getElementById('root')!).render(
       <Auth0Provider
       domain="viceversus.eu.auth0.com"
       clientId="DusEyIMRSEgOpQjGQ5jM8exZ9FAHV4Oq"
-      authorizationParams={{ redirect_uri: window.location.origin}}
+      authorizationParams={{
+        redirect_uri: window.location.origin,
+        scope: "openid profile email"
+        }}
       cacheLocation="localstorage">
           <App />
       </Auth0Provider>

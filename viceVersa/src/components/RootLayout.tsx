@@ -1,6 +1,8 @@
 import {useState, useRef, useEffect} from "react";
 import {useAuth0} from "@auth0/auth0-react";
 import {Link, Outlet} from "@tanstack/react-router";
+// 1. Import your Admin email constant
+import { ADMIN_EMAIL } from "../lib/mockData";
 
 export const RootLayout = () => {
   const {logout, loginWithRedirect, user, isAuthenticated} = useAuth0();
@@ -8,50 +10,57 @@ export const RootLayout = () => {
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
 
+  // 2. Determine if the current user is an admin
+  const isAdmin = isAuthenticated && user?.email === ADMIN_EMAIL;
+
   useEffect(() => {
     function handleClickOutside(event: MouseEvent) {
       if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
         setIsDropdownOpen(false);
       }
     }
-
     document.addEventListener("mousedown", handleClickOutside);
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
 
   return (
     <div className="min-h-screen bg-[#050505] text-white font-sans flex flex-col">
-
       <nav className="bg-[#0f1115] border-b border-[#1a1d24] p-4 flex justify-between items-center relative z-50">
 
+        {/* LEFT: Navigation */}
         <div className="flex gap-6 font-bold w-1/3">
           {isAuthenticated && (
             <>
-              <Link
-                to="/"
-                className="text-gray-400 hover:text-white transition-colors [&.active]:text-pink-500"
-              >
+              <Link to="/" className="text-gray-400 hover:text-white transition-colors [&.active]:text-pink-500">
                 Dashboard
               </Link>
-              <Link
-                to="/history"
-                search={{ filter: "all" }}
-                className="text-gray-400 hover:text-white transition-colors [&.active]:text-pink-500"
-              >
+              <Link to="/history" search={{ filter: "all" }} className="text-gray-400 hover:text-white transition-colors [&.active]:text-pink-500">
                 History
               </Link>
             </>
           )}
         </div>
 
+        {/* CENTER: Logo */}
         <h1 className="absolute left-1/2 -translate-x-1/2 text-2xl font-black tracking-tighter w-1/3 text-center">
           <Link to="/">ViceVersus</Link>
         </h1>
 
-        <div className="flex items-center justify-end gap-6 w-1/3">
+        {/* RIGHT: User Actions & Admin */}
+        <div className="flex items-center justify-end gap-4 w-1/3">
+
+          {/* 3. SHOW ADMIN BUTTON NEXT TO PROFILE (Visible at a glance) */}
+          {isAdmin && (
+            <Link
+              to="/admin"
+              className="hidden sm:flex items-center gap-2 bg-red-500/10 hover:bg-red-500/20 text-red-500 border border-red-500/30 px-3 py-1.5 rounded-lg text-xs font-black uppercase tracking-widest transition-all"
+            >
+              <span>🛡️</span> Admin
+            </Link>
+          )}
+
           {isAuthenticated ? (
             <div className="relative" ref={dropdownRef}>
-
               <button
                 onClick={() => setIsDropdownOpen(!isDropdownOpen)}
                 className="flex items-center justify-center hover:opacity-80 transition-opacity focus:outline-none"
@@ -60,8 +69,7 @@ export const RootLayout = () => {
                   <img src={user.picture} alt={user.name}
                        className="w-10 h-10 rounded-lg border-2 border-gray-700 hover:border-pink-500 transition-colors object-cover"/>
                 ) : (
-                  <div
-                    className="w-10 h-10 rounded-lg bg-gray-800 border-2 border-gray-700 hover:border-pink-500 transition-colors flex items-center justify-center">
+                  <div className="w-10 h-10 rounded-lg bg-gray-800 border-2 border-gray-700 hover:border-pink-500 transition-colors flex items-center justify-center">
                     <span className="text-sm font-bold text-gray-400">
                       {user?.name?.[0] || user?.email?.[0] || '?'}
                     </span>
@@ -70,13 +78,22 @@ export const RootLayout = () => {
               </button>
 
               {isDropdownOpen && (
-                <div
-                  className="absolute right-0 top-full mt-3 w-56 bg-[#1a1d24] border border-gray-800 rounded-xl shadow-2xl py-2 flex flex-col overflow-hidden origin-top-right animate-in fade-in slide-in-from-top-2">
-
+                <div className="absolute right-0 top-full mt-3 w-56 bg-[#1a1d24] border border-gray-800 rounded-xl shadow-2xl py-2 flex flex-col overflow-hidden origin-top-right animate-in fade-in slide-in-from-top-2">
                   <div className="px-4 py-3 border-b border-gray-800 mb-2 bg-[#0f1115]/50">
                     <p className="text-sm text-white font-bold truncate">{user?.name || 'Player'}</p>
                     <p className="text-xs text-gray-500 truncate">{user?.email}</p>
                   </div>
+
+                  {/* 4. ALSO ADD TO DROPDOWN (For consistency) */}
+                  {isAdmin && (
+                    <Link
+                      to="/admin"
+                      onClick={() => setIsDropdownOpen(false)}
+                      className="px-4 py-2.5 text-sm font-bold text-red-400 hover:bg-red-500/10 hover:text-red-300 transition-colors flex items-center gap-3 border-b border-gray-800/50 mb-1"
+                    >
+                      🛡️ Admin Terminal
+                    </Link>
+                  )}
 
                   <Link
                     to="/teams"
@@ -86,16 +103,10 @@ export const RootLayout = () => {
                     👥 My Teams
                   </Link>
                   <Link
-                    to="/games"
-                    onClick={() => setIsDropdownOpen(false)}
-                    className="px-4 py-2.5 text-sm font-medium text-gray-300 hover:bg-[#2a2d35] hover:text-white transition-colors flex items-center gap-3"
-                  >
-                    🎮 My Games
-                  </Link>
-                  <Link
                     to="/history"
                     search={{ filter: "myTournaments" }}
-                    className="block px-4 py-2 text-sm text-gray-300 hover:bg-gray-800 hover:text-white"
+                    onClick={() => setIsDropdownOpen(false)}
+                    className="px-4 py-2.5 text-sm font-medium text-gray-300 hover:bg-[#2a2d35] hover:text-white transition-colors flex items-center gap-3"
                   >
                     🏆 My Tournaments
                   </Link>
@@ -125,7 +136,6 @@ export const RootLayout = () => {
                   </button>
                 </div>
               )}
-
             </div>
           ) : (
             <button
@@ -141,7 +151,6 @@ export const RootLayout = () => {
       <main className="flex-1 w-full">
         <Outlet/>
       </main>
-
     </div>
   );
 };
