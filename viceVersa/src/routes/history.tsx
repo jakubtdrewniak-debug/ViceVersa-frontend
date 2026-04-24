@@ -17,7 +17,7 @@ function TournamentHistoryRoute() {
           </div>
           <Link
             to="/"
-            classname="text-gray-400 hover:text-white bg-[#0f1115] hover:bg-[#1a1d24] border border-[#1a1d24] px-5 py-2.5 rounded-lg font-bold transition-all">
+            className="text-gray-400 hover:text-white bg-[#0f1115] hover:bg-[#1a1d24] border border-[#1a1d24] px-5 py-2.5 rounded-lg font-bold transition-all">
             Back to active
           </Link>
         </div>

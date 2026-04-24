@@ -6,6 +6,8 @@ COPY viceVersa/package*.json ./
 
 RUN npm install
 
+RUN npx
+
 COPY viceVersa/ ./
 
 RUN npm run build
