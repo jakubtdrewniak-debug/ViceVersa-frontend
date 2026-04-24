@@ -1,5 +1,7 @@
 import {createFileRoute, Link} from '@tanstack/react-router'
 import {RecentActivity} from "../components/RecentActivity.tsx";
+import {useAuth0} from "@auth0/auth0-react";
+import {LandingPage} from "../components/LandingPage.tsx";
 
 export const Route = createFileRoute('/')({
   component: Dashboard,
@@ -8,6 +10,14 @@ export const Route = createFileRoute('/')({
 
 // eslint-disable-next-line react-refresh/only-export-components
 function Dashboard() {
+  const {isAuthenticated, isLoading} = useAuth0();
+
+  if (isLoading) {
+    return <div className="h-screen flex items-center justify-center text-white bg-[#050505]">Loading...</div>
+  }
+  if (!isAuthenticated) {
+    return <LandingPage />
+  }
   return <>
     <div>
       <div className="flex items-center justify-between">

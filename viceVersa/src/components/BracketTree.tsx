@@ -6,7 +6,6 @@ interface Props {
 }
 
 export function BracketTree({ matches }: Props) {
-  // Group matches by round
   const matchesByRound = matches.reduce((acc, match) => {
     acc[match.round] = acc[match.round] || []
     acc[match.round].push(match)
@@ -39,7 +38,6 @@ export function BracketTree({ matches }: Props) {
                   params={{ matchId: match.id }}
                   className="relative z-10 block bg-[#1a1d24] border border-gray-800 rounded-lg p-3 hover:border-pink-500/50 transition-all shadow-lg group cursor-pointer"
                 >
-                  {/* Participant 1 */}
                   <div className={`flex justify-between items-center mb-2 ${match.winnerId && match.winnerId !== match.player1?.id ? 'opacity-40 grayscale' : ''}`}>
                     <div className="flex items-center gap-2">
                       <div className="w-6 h-6 bg-gray-700 flex items-center justify-center rounded-full overflow-hidden shrink-0">

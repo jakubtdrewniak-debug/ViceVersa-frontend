@@ -122,7 +122,7 @@ export const MOCK_HISTORY: PastTournament[] = [
     name: 'Bikini Bottom Rumble',
     game: 'Nick All-Star Brawl 2',
     dateCompleted: 'Mar 12, 2024',
-    participantCount: 32,
+    participantCount: 8,
     winner: MOCK_SOLOS[0] // SpongeBob won
   },
   {
