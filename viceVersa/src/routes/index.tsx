@@ -8,17 +8,30 @@ export const Route = createFileRoute('/')({
 
 // eslint-disable-next-line react-refresh/only-export-components
 function Dashboard() {
-  return <div>
-    <div className="p-8">
-      <div className="flex justify-center items-center mb-8">
-        <Link
-        to="/create"
-        className="bg-blue-600 text-white px-6 py-2 rounded-lg font-semibold hover:bg-blue-700 transition-colors shadow-sm">
-          Create new tournament
-        </Link>
-      </div>
+  return <>
+    <div>
+      <div className="flex items-center justify-between">
+        <div>
+          <h1 className="text-3xl font-black tracking-tight">Your Hub</h1>
+          <p className="text-gray-400 mt-1">Manage tournaments, teams, and matches.</p>
+        </div>
 
+        <div className="flex gap-3">
+          <Link
+            to="/create-team"
+            className="bg-[#1a1d24] hover:bg-[#2a2d35] text-white border border-gray-700 px-5 py-3 rounded-lg font-bold transition-colors"
+          >
+            + New Team
+          </Link>
+          <Link
+            to="/create"
+            className="bg-pink-600 hover:bg-pink-500 text-white px-5 py-3 rounded-lg font-bold transition-colors shadow-[0_0_15px_rgba(219,39,119,0.3)]"
+          >
+            + New Tournament
+          </Link>
+        </div>
+      </div>
     </div>
     <RecentActivity/>
-  </div>
+  </>
 }
