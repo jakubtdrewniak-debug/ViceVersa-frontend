@@ -6,7 +6,7 @@ export interface PastTournament {
   name: string
   game: string
   dateCompleted: string
-  playerCount: number
+  participantCount: number
   winner: User
 }
 
@@ -53,7 +53,7 @@ export function TournamentHistory({tournaments, isLoading}: Props) {
             <div className="flex gap-3 text-sm text-gray-500 font-medium">
               <span>{t.game}</span>
               <span>•</span>
-              <span>{t.playerCount} Players</span>
+              <span>{t.participantCount} Players</span>
               <span>•</span>
               <span>{t.dateCompleted}</span>
             </div>
