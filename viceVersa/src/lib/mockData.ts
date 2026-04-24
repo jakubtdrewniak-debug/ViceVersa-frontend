@@ -97,24 +97,6 @@ export const MOCK_UPCOMING_TOURNAMENT: TournamentDetails = {
   matches: []
 };
 
-export const MOCK_HISTORY: PastTournament[] = [
-  {
-    id: 'tourney_done_1',
-    name: 'Bikini Bottom Rumble',
-    game: 'Nick All-Star Brawl 2',
-    dateCompleted: 'Mar 12, 2024',
-    participantCount: 32,
-    winner: MOCK_SOLOS[0] // SpongeBob won
-  },
-  {
-    id: 'tourney_done_2',
-    name: 'Warner Bros Tag Tournament',
-    game: 'MultiVersus',
-    dateCompleted: 'Feb 28, 2024',
-    participantCount: 16,
-    winner: MOCK_TEAMS[1] // Looney Tunes won
-  }
-];
 
 
 export const MOCK_DASHBOARD_CARDS = [
@@ -132,4 +114,55 @@ export const MOCK_DASHBOARD_CARDS = [
     players: MOCK_UPCOMING_TOURNAMENT.participants.length,
     status: MOCK_UPCOMING_TOURNAMENT.status
   },
+];
+
+export const MOCK_HISTORY: PastTournament[] = [
+  {
+    id: 'tourney_done_1',
+    name: 'Bikini Bottom Rumble',
+    game: 'Nick All-Star Brawl 2',
+    dateCompleted: 'Mar 12, 2024',
+    participantCount: 32,
+    winner: MOCK_SOLOS[0] // SpongeBob won
+  },
+  {
+    id: 'tourney_done_2',
+    name: 'Warner Bros Tag Tournament',
+    game: 'MultiVersus',
+    dateCompleted: 'Feb 28, 2024',
+    participantCount: 16,
+    winner: MOCK_TEAMS[1] // Looney Tunes won
+  },
+  {
+    id: 'tourney_done_3',
+    name: 'Land of Ooo Regionals',
+    game: 'Super Smash Bros Ultimate',
+    dateCompleted: 'Jan 15, 2024',
+    participantCount: 64,
+    winner: MOCK_SOLOS[6] // Finn won
+  },
+  {
+    id: 'tourney_done_4',
+    name: 'Springfield Friday Locals',
+    game: 'Tekken 8',
+    dateCompleted: 'Jan 05, 2024',
+    participantCount: 24,
+    winner: MOCK_SOLOS[4] // Homer won
+  },
+  {
+    id: 'tourney_done_5',
+    name: 'Cartoon Network 2v2 Clash',
+    game: 'Brawlhalla',
+    dateCompleted: 'Dec 10, 2023',
+    participantCount: 8,
+    winner: MOCK_TEAMS[2] // Treehouse Bros won
+  },
+  {
+    id: 'tourney_done_6',
+    name: 'Krusty Krab Charity Bracket',
+    game: 'Nick All-Star Brawl 2',
+    dateCompleted: 'Nov 22, 2023',
+    participantCount: 128,
+    winner: MOCK_TEAMS[0] // Krusty Krab Crew won
+  }
 ];
