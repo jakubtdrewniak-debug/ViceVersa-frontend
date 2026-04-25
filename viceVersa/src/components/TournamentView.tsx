@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { BracketTree } from "./BracketTree.tsx"; // Make sure this path is correct!
-import type { Participant, Match, TournamentDetails } from "../types";
+import type { TournamentDetails } from "../types";
 
 interface Props {
   tournament: TournamentDetails
