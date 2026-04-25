@@ -1,7 +1,8 @@
 /* eslint-disable react-refresh/only-export-components */
 import { createFileRoute, useNavigate, Link } from '@tanstack/react-router'
 import { useState } from 'react'
-import {CreateTeamForm, type TeamFormData} from "../components/CreateTeam.tsx";
+import {CreateTeamForm} from "../components/CreateTeam.tsx";
+import type {TeamFormData} from "../types.ts";
 
 
 export const Route = createFileRoute('/create-team')({
