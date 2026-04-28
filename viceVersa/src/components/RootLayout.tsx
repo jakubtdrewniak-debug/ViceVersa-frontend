@@ -1,7 +1,6 @@
 import {useState, useRef, useEffect} from "react";
 import {useAuth0} from "@auth0/auth0-react";
 import {Link, Outlet} from "@tanstack/react-router";
-// 1. Import your Admin email constant
 import { ADMIN_EMAIL } from "../lib/mockData";
 
 export const RootLayout = () => {
@@ -10,7 +9,6 @@ export const RootLayout = () => {
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
 
-  // 2. Determine if the current user is an admin
   const isAdmin = isAuthenticated && user?.email === ADMIN_EMAIL;
 
   useEffect(() => {

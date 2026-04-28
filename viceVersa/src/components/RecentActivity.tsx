@@ -1,53 +1,101 @@
 import { Link } from "@tanstack/react-router";
-// ⚠️ IMPORTANT: Verify this path!
-// If your mockData is in a different folder, update this line.
-import { MOCK_LIVE_TOURNAMENT, MOCK_HISTORY } from "../lib/mockData";
+import { useQuery } from "@tanstack/react-query";
+import { useEffect } from "react";
+import { toast } from "react-toastify";
+import type { Match, TournamentDetails } from "../types.ts";
+
+const BASE_URL = "https://versa-backend-876198057788.europe-north2.run.app";
 
 export function RecentActivity() {
-  // 1. SAFE DATA EXTRACTION
-  const recentMatches = MOCK_LIVE_TOURNAMENT?.matches?.slice(0, 3) || [];
-  const recentTournaments = MOCK_HISTORY?.slice(0, 3) || [];
 
-  // 2. DIAGNOSTIC FALLBACK
-  // If the import fails, show this instead of crashing to a white screen
-  if (!MOCK_LIVE_TOURNAMENT || !MOCK_HISTORY) {
+  const fetchData = async (endpoint: string) => {
+    try {
+      const res = await fetch(`${BASE_URL}${endpoint}`, {
+        method: "GET",
+        cache: "no-store",
+        headers: {
+          "Accept": "application/json",
+          "Content-Type": "application/json"
+        }
+      });
+
+      if (!res.ok) {
+        throw new Error(`Server returned ${res.status}`);
+      }
+
+      const contentType = res.headers.get("content-type");
+      if (!contentType || !contentType.includes("application/json")) {
+        // If this fires, we are hitting a proxy or a redirect, not the API
+        console.error("Non-JSON response received from:", endpoint);
+        throw new Error("Backend sent HTML instead of JSON.");
+      }
+
+      return await res.json();
+    } catch (err: any) {
+      console.error("Fetch failure:", err);
+      throw err;
+    }
+  };
+
+  // 2. MATCHES QUERY
+  const {
+    data: matches = [],
+    isLoading: matchesLoading,
+    isError: matchesError,
+    error: matchErrorData
+  } = useQuery<Match[]>({
+    queryKey: ["matches", "recent"],
+    queryFn: () => fetchData('/api/matches')
+  });
+
+  // 3. TOURNAMENTS QUERY
+  const {
+    data: tournaments = [],
+    isLoading: tournamentsLoading,
+    isError: tournamentsError,
+    error: tournamentsErrorData
+  } = useQuery<TournamentDetails[]>({
+    queryKey: ["tournaments", "live"],
+    queryFn: () => fetchData('/api/tournaments')
+  });
+
+  // 4. TOASTS
+  useEffect(() => {
+    if (matchesError) toast.error(`Matches: ${matchErrorData?.message}`);
+    if (tournamentsError) toast.error(`Tournaments: ${tournamentsErrorData?.message}`);
+  }, [matchesError, tournamentsError, matchErrorData, tournamentsErrorData]);
+
+  if (matchesLoading || tournamentsLoading) {
     return (
-      <div className="container mx-auto p-8 mt-10">
-        <div className="bg-red-900/50 border border-red-500 p-6 rounded-xl text-red-200 shadow-sm">
-          <h3 className="font-black text-xl mb-2 text-red-400">⚠️ Data Import Failed</h3>
-          <p className="font-medium">RecentActivity loaded, but it can't find your mock data.</p>
-          <p className="mt-2 text-sm text-red-300">Check the import path at the top of <code>RecentActivity.tsx</code>. Make sure it points exactly to where your <code>mockData.ts</code> file lives.</p>
-        </div>
+      <div className="container mx-auto p-8 mt-10 text-center text-gray-400 font-bold animate-pulse">
+        Connecting to Vice Versus Cloud...
       </div>
     );
   }
 
-  // 3. THE INTERACTABLE UI
   return (
     <div className="container mx-auto p-8 grid grid-cols-1 md:grid-cols-2 gap-12 mt-10 font-sans">
-
-      {/* Matches Section */}
       <section>
         <h2 className="text-2xl font-bold mb-6 text-white">Recent Matches</h2>
         <div className="space-y-4">
-          {recentMatches.length === 0 ? (
-            <p className="text-gray-500 italic">No recent matches found.</p>
+          {matches.length === 0 ? (
+            <p className="text-gray-500 italic">No recent matches found in database.</p>
           ) : (
-            recentMatches.map((match) => (
-              <div key={match.id} className="bg-[#1a1d24] p-4 rounded-xl shadow-sm flex justify-between items-center border border-gray-800 hover:border-pink-500 transition-colors">
+            matches.map((match) => (
+              <div key={match.id}
+                   className="bg-[#1a1d24] p-4 rounded-xl shadow-sm flex justify-between items-center border border-gray-800 hover:border-pink-500 transition-colors">
                 <div className="flex items-center gap-2 text-white">
-                  <span className="font-medium">{match?.player1?.name || 'TBD'}</span>
+                  <span className="font-medium">{match.player1?.name || 'TBD'}</span>
                   <span className="text-gray-500 text-sm mx-2 font-bold">VS</span>
-                  <span className="font-medium">{match?.player2?.name || 'TBD'}</span>
+                  <span className="font-medium">{match.player2?.name || 'TBD'}</span>
                 </div>
 
                 <div className="flex items-center gap-4">
-                  {match?.score && (
+                  {match.score && (
                     <span className="font-black text-white bg-[#0f1115] px-3 py-1 rounded-lg border border-gray-800">
-                      {match.score.p1} - {match.score.p2}
-                    </span>
+                        {match.score.p1} - {match.score.p2}
+                      </span>
                   )}
-                  {/* 👇 This is what makes it interactable! */}
                   <Link
                     to="/match/$matchId"
                     params={{ matchId: match.id }}
@@ -62,25 +110,25 @@ export function RecentActivity() {
         </div>
       </section>
 
-      {/* Tournaments Section */}
       <section>
-        <h2 className="text-2xl font-bold mb-6 text-white">Completed Tournaments</h2>
+        <h2 className="text-2xl font-bold mb-6 text-white">Live Tournaments</h2>
         <div className="space-y-4">
-          {recentTournaments.length === 0 ? (
-            <p className="text-gray-500 italic">No completed tournaments found.</p>
+          {tournaments.length === 0 ? (
+            <p className="text-gray-500 italic">No tournaments found in database.</p>
           ) : (
-            recentTournaments.map((tournament) => (
-              <div key={tournament.id} className="bg-[#1a1d24] p-4 rounded-xl shadow-sm flex justify-between items-center border border-gray-800 hover:border-pink-500 transition-colors">
+            tournaments.map((tournament) => (
+              <div key={tournament.id}
+                   className="bg-[#1a1d24] p-4 rounded-xl shadow-sm flex justify-between items-center border border-gray-800 hover:border-pink-500 transition-colors">
                 <div className="flex flex-col">
-                  <span className="font-bold text-white text-lg">{tournament?.name || 'Unknown'}</span>
-                  <span className="text-xs text-pink-500 font-bold tracking-widest uppercase">{tournament?.game || 'Unknown Game'}</span>
+                  <span className="font-bold text-white text-lg">{tournament.name}</span>
+                  <span className="text-xs text-pink-500 font-bold tracking-widest uppercase">{tournament.game}</span>
                 </div>
 
                 <div className="flex items-center gap-4">
-                  <span className="bg-yellow-500/10 text-yellow-500 border border-yellow-500/20 px-3 py-1 rounded-lg text-xs font-bold flex items-center gap-1">
-                    🏆 {tournament?.winner?.name || 'TBD'}
-                  </span>
-                  {/* 👇 This is what makes it interactable! */}
+                    <span
+                      className="bg-yellow-500/10 text-yellow-500 border border-yellow-500/20 px-3 py-1 rounded-lg text-xs font-bold flex items-center gap-1">
+                      {tournament.status}
+                    </span>
                   <Link
                     to="/tournament/$tournamentId"
                     params={{ tournamentId: tournament.id }}
@@ -94,7 +142,6 @@ export function RecentActivity() {
           )}
         </div>
       </section>
-
     </div>
   );
 }

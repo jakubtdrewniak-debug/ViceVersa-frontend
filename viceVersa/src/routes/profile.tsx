@@ -1,18 +1,19 @@
-import { createFileRoute } from '@tanstack/react-router'
-import { useAuth0 } from '@auth0/auth0-react'
-import { useState } from 'react'
+import { createFileRoute } from "@tanstack/react-router"
+import { useAuth0 } from "@auth0/auth0-react"
+import { useState } from "react"
 
-export const Route = createFileRoute('/profile')({
+export const Route = createFileRoute("/profile")({
   component: ProfileRoute,
 })
 
+// eslint-disable-next-line react-refresh/only-export-components
 function ProfileRoute() {
   const { user, isAuthenticated, isLoading } = useAuth0()
 
   const [isEditing, setIsEditing] = useState(false)
-  const [username, setUsername] = useState(user?.name || '')
-  const [primaryGame, setPrimaryGame] = useState('Super Smash Bros. Ultimate') // Default mock game
-  const [bio, setBio] = useState('Ready to compete!')
+  const [username, setUsername] = useState(user?.name || "")
+  const [primaryGame, setPrimaryGame] = useState("Super Smash Bros. Ultimate") // Default mock game
+  const [bio, setBio] = useState("Ready to compete!")
   const [isSaving, setIsSaving] = useState(false)
 
   if (isLoading) {

@@ -13,7 +13,6 @@ export function LandingPage() {
         </p>
       </div>
 
-      {/* The Recent Activity Component */}
       <div className="w-full max-w-7xl">
         <RecentActivity />
       </div>
