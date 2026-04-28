@@ -1,7 +1,6 @@
 import {useState, useRef, useEffect} from "react";
 import {useAuth0} from "@auth0/auth0-react";
 import {Link, Outlet} from "@tanstack/react-router";
-import { ADMIN_EMAIL } from "../lib/mockData";
 
 export const RootLayout = () => {
   const {logout, loginWithRedirect, user, isAuthenticated} = useAuth0();
@@ -9,12 +8,15 @@ export const RootLayout = () => {
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
 
-  const isAdmin = isAuthenticated && user?.email === ADMIN_EMAIL;
+  const rolesClaim = "https://viceversa.dev/roles"
+  const isAdmin = isAuthenticated && user?.[rolesClaim]?.includes("admin");
 
+  console.log(user)
   useEffect(() => {
     function handleClickOutside(event: MouseEvent) {
       if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
         setIsDropdownOpen(false);
+
       }
     }
     document.addEventListener("mousedown", handleClickOutside);
@@ -39,15 +41,12 @@ export const RootLayout = () => {
           )}
         </div>
 
-        {/* CENTER: Logo */}
         <h1 className="absolute left-1/2 -translate-x-1/2 text-2xl font-black tracking-tighter w-1/3 text-center">
           <Link to="/">ViceVersus</Link>
         </h1>
 
-        {/* RIGHT: User Actions & Admin */}
         <div className="flex items-center justify-end gap-4 w-1/3">
 
-          {/* 3. SHOW ADMIN BUTTON NEXT TO PROFILE (Visible at a glance) */}
           {isAdmin && (
             <Link
               to="/admin"
@@ -82,7 +81,6 @@ export const RootLayout = () => {
                     <p className="text-xs text-gray-500 truncate">{user?.email}</p>
                   </div>
 
-                  {/* 4. ALSO ADD TO DROPDOWN (For consistency) */}
                   {isAdmin && (
                     <Link
                       to="/admin"
