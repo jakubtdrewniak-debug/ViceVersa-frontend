@@ -11,7 +11,6 @@ export const RootLayout = () => {
   const rolesClaim = "https://viceversa.dev/roles"
   const isAdmin = isAuthenticated && user?.[rolesClaim]?.includes("admin");
 
-  console.log(user)
   useEffect(() => {
     function handleClickOutside(event: MouseEvent) {
       if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {

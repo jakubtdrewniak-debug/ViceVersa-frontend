@@ -1,62 +1,66 @@
-export interface User {
+export type EntryType = 'SOLO' | 'TEAM';
+export type TournamentStatus = 'UPCOMING' | 'LIVE' | 'COMPLETED';
+export type MatchStatus = 'PENDING' | 'IN_PROGRESS' | 'COMPLETED';
+
+export interface UserDto {
   id: string;
   name: string;
   avatar?: string;
-  email?: string;
+  email: string;
 }
 
-export interface Participant {
+export interface ParticipantDto {
   id: string;
   name: string;
   avatar?: string;
   isTeam: boolean;
-  members: User[];
-  captain?: User;
+}
+export interface MatchScoreDto {
+  scoreP1: number;
+  scoreP2: number;
+}
+export interface TeamDto {
+  id: string;
+  name: string;
+  avatar?: string;
+  captain: UserDto;
+  members: UserDto[];
+}
+
+export interface MatchDto {
+  id: string;
+  tournamentId: string | null;
+  round: number;
+  date: string;
+  status: MatchStatus;
+  player1: ParticipantDto | null;
+  player2: ParticipantDto | null;
+  winner: ParticipantDto | null;
+  score: MatchScoreDto;
+  player1Slot: boolean;
+  nextMatchId: string | null;
+}
+
+export interface TournamentDto {
+  id: string;
+  name: string;
+  game: string;
+  type: EntryType;
+  status: TournamentStatus;
+  winnerId: string | null;
+  matches: MatchDto[];
 }
 
 export interface TournamentFormData {
   name: string;
   game: string;
-  format: string;
-  entryType: "solo" | "team";
-  participants: Participant[];
-}
-
-export interface Match {
-  id: string;
-  tournamentId: string | null;
-  round: number | null;
-  date: string;
-  status: "Pending" | "In Progress" | "Completed";
-  player1: Participant | null;
-  player2: Participant | null;
-  winner?: Participant | null;
-  score?: { p1: number; p2: number };
-}
-
-export interface TournamentDetails {
-  id: string;
-  name: string;
-  game: string;
-  status: "Upcoming" | "Live" | "Completed";
-  format: string;
-  entryType: "solo" | "team";
-  participants: Participant[];
-  matches: Match[];
-}
-
-export interface PastTournament {
-  id: string;
-  name: string;
-  game: string;
-  dateCompleted: string;
-  participantCount: number;
-  winner: Participant;
+  entryType: EntryType;
+  participants: ParticipantDto[];
 }
 
 export interface TeamFormData {
   name: string;
-  members: User[];
+  members: UserDto[];
 }
 
 export type HistorySearch = {

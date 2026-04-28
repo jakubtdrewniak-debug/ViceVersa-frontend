@@ -1,25 +1,94 @@
-import { useState } from 'react'
-import { MOCK_TEAMS, MOCK_HISTORY } from '../lib/mockData'
+import {useAuth0} from "@auth0/auth0-react";
+import {useMutation, useQuery, useQueryClient} from "@tanstack/react-query";
+import type {Team, TournamentDetails} from "../types.ts";
 
+const BASE_URL = "https://versa-backend-876198057788.europe-north2.run.app" +
+  ""
 export function AdminControlCenter() {
-  // Local state for all entities so we can "delete" them visually
-  const [teams, setTeams] = useState(MOCK_TEAMS);
-  const [history, setHistory] = useState(MOCK_HISTORY);
+  const { getAccessTokenSilently } = useAuth0();
+  const queryClient = useQueryClient();
+
+  const { data: teams = [], isLoading: isLoadingTeams} = useQuery<Team[]>({
+    queryKey: ["teams", "admin"],
+    queryFn: async () => {
+      const res = await fetch(`${BASE_URL}/api/teams`);
+      if (!res.ok) throw new Error("Failed to fetch teams");
+      return res.json();
+    }
+  });
+
+  const {data: tournaments = [], isLoading: isLoadingTournaments } = useQuery<TournamentDetails[]>({
+    queryKey: ["tournaments", "admin"],
+    queryFn: async () => {
+      const res = await fetch(`${BASE_URL}/api/tournaments`);
+      if (!res.ok) throw new Error("Failed to fetch tournaments")
+      return res.json();
+    }
+  });
+
+  const deleteTeamMutation = useMutation({
+    mutationFn: async (id: string) => {
+      // 🚨 GRAB THE AUTH0 TOKEN BEFORE THE REQUEST!
+      const token = await getAccessTokenSilently();
+
+      const res = await fetch(`${BASE_URL}/api/teams/${id}`, {
+        method: 'DELETE',
+        headers: {
+          'Authorization': `Bearer ${token}` // Show your VIP pass to Spring Boot
+        }
+      });
+
+      if (!res.ok) throw new Error(`Server Error: ${res.status}`);
+    },
+    onSuccess: () => {
+      // Tell React Query to refresh the table automatically
+      queryClient.invalidateQueries({ queryKey: ['teams'] });
+    },
+    onError: (err) => {
+      console.error("Delete failed:", err);
+      alert("Failed to delete team. Are you sure you're an admin?");
+    }
+  });
+
+  const deleteTournamentMutation = useMutation({
+    mutationFn: async (id: string) => {
+      const token = await getAccessTokenSilently();
+
+      const res = await fetch(`${BASE_URL}/api/tournaments/${id}`, {
+        method: 'DELETE',
+        headers: {
+          'Authorization': `Bearer ${token}`
+        }
+      });
+
+      if (!res.ok) throw new Error(`Server Error: ${res.status}`);
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['tournaments'] });
+    }
+  });
+
+  // ==========================================
+  // 3. HANDLERS
+  // ==========================================
   const handleDeleteTeam = (id: string) => {
     if (confirm("Are you sure? This will disband the team and remove all members.")) {
-      setTeams(prev => prev.filter(t => t.id !== id));
+      deleteTeamMutation.mutate(id);
     }
   };
 
-  const handleDeleteHistory = (id: string) => {
+  const handleDeleteTournament = (id: string) => {
     if (confirm("Delete this historical record forever?")) {
-      setHistory(prev => prev.filter(h => h.id !== id));
+      deleteTournamentMutation.mutate(id);
     }
   };
+
+  if (isLoadingTeams || isLoadingTournaments) {
+    return <div className="p-10 text-white font-bold animate-pulse">Loading Admin Data...</div>;
+  }
 
   return (
     <div className="space-y-12 pb-20">
-      {/* 1. Teams Management */}
       <section className="space-y-4">
         <h2 className="text-xl font-black uppercase tracking-widest text-pink-500 flex items-center gap-2">
           <span className="w-2 h-2 bg-pink-500 rounded-full animate-pulse"></span>
@@ -70,13 +139,13 @@ export function AdminControlCenter() {
             </tr>
             </thead>
             <tbody className="divide-y divide-gray-800">
-            {history.map(item => (
+            {tournaments.map(item => (
               <tr key={item.id} className="hover:bg-white/5 transition-colors">
                 <td className="px-6 py-4 font-bold text-white">{item.name}</td>
                 <td className="px-6 py-4 text-gray-400">{item.winner.name}</td>
                 <td className="px-6 py-4 text-right">
                   <button
-                    onClick={() => handleDeleteHistory(item.id)}
+                    onClick={() => handleDeleteTournament(item.id)}
                     className="text-red-500 hover:text-white hover:bg-red-600 px-3 py-1 rounded-md transition-all font-bold"
                   >
                     Purge
