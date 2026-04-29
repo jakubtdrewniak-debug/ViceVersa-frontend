@@ -26,7 +26,6 @@ export const RootLayout = () => {
     <div className="min-h-screen bg-[#050505] text-white font-sans flex flex-col">
       <nav className="bg-[#0f1115] border-b border-[#1a1d24] p-4 flex justify-between items-center relative z-50">
 
-        {/* LEFT: Navigation */}
         <div className="flex gap-6 font-bold w-1/3">
           {isAuthenticated && (
             <>
@@ -62,7 +61,7 @@ export const RootLayout = () => {
                 className="flex items-center justify-center hover:opacity-80 transition-opacity focus:outline-none"
               >
                 {user?.picture ? (
-                  <img src={user.picture} alt={user.name}
+                  <img src={user.picture} alt=""
                        className="w-10 h-10 rounded-lg border-2 border-gray-700 hover:border-pink-500 transition-colors object-cover"/>
                 ) : (
                   <div className="w-10 h-10 rounded-lg bg-gray-800 border-2 border-gray-700 hover:border-pink-500 transition-colors flex items-center justify-center">

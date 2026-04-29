@@ -51,7 +51,7 @@ export function BracketTree({ matches }: Props) {
                       <div className="flex justify-between items-center h-1/2 px-4 border-b border-gray-800/40">
                         <div className="flex items-center gap-3 min-w-0">
                           <div className="w-8 h-8 bg-gray-800 rounded-full border border-gray-700 flex items-center justify-center overflow-hidden shrink-0">
-                            {match.player1?.avatar ? <img src={match.player1.avatar} className="w-full h-full object-cover"  alt={match.player1.name}/> : <span className="text-[10px] text-gray-500">?</span>}
+                            {match.player1?.avatar ? <img src={match.player1.avatar} className="w-full h-full object-cover"  alt=""/> : <span className="text-[10px] text-gray-500">?</span>}
                           </div>
                           <span className={`text-sm truncate ${match.winnerId === match.player1?.id ? 'text-white font-bold' : 'text-gray-400'}`}>
                             {match.player1?.name || 'TBD'}
@@ -65,7 +65,7 @@ export function BracketTree({ matches }: Props) {
                       <div className="flex justify-between items-center h-1/2 px-4">
                         <div className="flex items-center gap-3 min-w-0">
                           <div className="w-8 h-8 bg-gray-800 rounded-full border border-gray-700 flex items-center justify-center overflow-hidden shrink-0">
-                            {match.player2?.avatar ? <img src={match.player2.avatar} className="w-full h-full object-cover"  alt={match.player2.name}/> : <span className="text-[10px] text-gray-500">?</span>}
+                            {match.player2?.avatar ? <img src={match.player2.avatar} className="w-full h-full object-cover"  alt=""/> : <span className="text-[10px] text-gray-500">?</span>}
                           </div>
                           <span className={`text-sm truncate ${match.winnerId === match.player2?.id ? 'text-white font-bold' : 'text-gray-400'}`}>
                             {match.player2?.name || 'TBD'}

@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { useApi } from "../hooks/useApi";
-import { BracketTree } from "./BracketTree"; // Ensure this path is correct!
+import { BracketTree } from "./BracketTree";
 import type { TournamentDto, ParticipantDto } from "../types";
 
 interface Props {
