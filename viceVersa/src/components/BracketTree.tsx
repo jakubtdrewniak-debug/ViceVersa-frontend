@@ -1,5 +1,5 @@
-import { Link } from '@tanstack/react-router'
-import type { MatchDto } from '../types'
+import { Link } from "@tanstack/react-router"
+import type { MatchDto } from "../types"
 
 interface Props {
   matches: MatchDto[]
@@ -81,14 +81,14 @@ export function BracketTree({ matches }: Props) {
                       <div
                         className="absolute pointer-events-none"
                         style={{
-                          left: '100%',
+                          left: "100%",
                           width: `${horizontalGap}px`,
                           height: `${totalBracketHeight / (matchesByRound[roundNum].length * 2)}px`,
                           top: matchIndex % 2 === 0 ? '50%' : 'auto',
                           bottom: matchIndex % 2 !== 0 ? '50%' : 'auto',
                         }}
                       >
-                        <div className="absolute bg-gray-700" style={{ width: '50%', height: '1px', left: 0, top: matchIndex % 2 === 0 ? 0 : '100%' }} />
+                        <div className="absolute bg-gray-700" style={{ width: "50%", height: '1px', left: 0, top: matchIndex % 2 === 0 ? 0 : '100%' }} />
                         <div className="absolute bg-gray-700" style={{ width: '1px', height: '100%', left: '50%', top: 0 }} />
                         {matchIndex % 2 === 0 && (
                           <div className="absolute bg-gray-700" style={{ width: '50%', height: '1px', right: 0, top: '100%' }} />

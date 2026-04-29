@@ -1,115 +1,98 @@
-import { useState } from 'react'
-import { useNavigate } from '@tanstack/react-router'
-import { MOCK_SOLOS, MOCK_TEAMS, MOCK_MY_MATCHES } from '../lib/mockData'
-import type { Match, Participant } from '../types'
+import { useState } from "react"
+import { useNavigate } from "@tanstack/react-router"
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query"
+import { useApi } from "../hooks/useApi"
+import type { MatchDto, UserDto, TeamDto, EntryType } from "../types"
 
 export function CreateMatch() {
   const navigate = useNavigate()
+  const queryClient = useQueryClient()
+  const { callApi } = useApi()
 
-  const allParticipants: Participant[] = [...MOCK_SOLOS, ...MOCK_TEAMS]
+  const [player1Id, setPlayer1Id] = useState("")
+  const [player2Id, setPlayer2Id] = useState("")
+  const [entryType, setEntryType] = useState<EntryType>("SOLO")
 
-  const [player1Id, setPlayer1Id] = useState<string>('')
-  const [player2Id, setPlayer2Id] = useState<string>('')
-  const [matchDate, setMatchDate] = useState<string>(
-    new Date().toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })
-  )
-  const [isSubmitting, setIsSubmitting] = useState(false)
+  const { data: users, isLoading: loadingUsers } = useQuery<UserDto[]>({
+    queryKey: ["users"],
+    queryFn: () => callApi("/users"),
+  })
 
-  const handleCreateMatch = async () => {
-    if (!player1Id || !player2Id) return alert("Please select both players!")
-    if (player1Id === player2Id) return alert("A player cannot fight themselves!")
+  const { data: teams, isLoading: loadingTeams } = useQuery<TeamDto[]>({
+    queryKey: ['teams'],
+    queryFn: () => callApi('/teams'),
+  })
 
-    setIsSubmitting(true)
+  const { mutate: deployMatch, isPending: isSubmitting } = useMutation({
+    mutationFn: (payload: any) =>
+      callApi('/matches', {
+        method: 'POST',
+        body: JSON.stringify(payload)
+      }),
+    onSuccess: (data: MatchDto) => {
+      queryClient.invalidateQueries({ queryKey: ['matches'] })
+      navigate({ to: `/match/${data.id}` })
+    },
+    onError: (err: Error) => alert(err.message),
+  })
 
-    const p1 = allParticipants.find(p => p.id === player1Id) || null
-    const p2 = allParticipants.find(p => p.id === player2Id) || null
-
-    const newMatch: Match = {
-      id: `ex_${Date.now()}`,
-      tournamentId: null,
-      round: null,
-      date: matchDate,
-      status: 'Pending',
-      player1: p1,
-      player2: p2,
-      score: { p1: 0, p2: 0 }
-    }
-
-    MOCK_MY_MATCHES.unshift(newMatch)
-
-    await new Promise(resolve => setTimeout(resolve, 600))
-
-    navigate({ to: `/match/${newMatch.id}` })
+  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault()
+    deployMatch({ type: entryType, player1Id, player2Id })
   }
 
+  if (loadingUsers || loadingTeams) return <div className="p-10 text-pink-500">Syncing...</div>
+
   return (
-  <form action={handleCreateMatch} className="bg-[#1a1d24] p-8 rounded-2xl border border-gray-800 shadow-2xl space-y-8">
+    <form onSubmit={handleSubmit} className="bg-[#1a1d24] p-8 rounded-2xl border border-gray-800 space-y-8">
+      <div className="flex bg-[#0f1115] p-1 rounded-lg border border-gray-800 w-fit">
+        {(['SOLO', 'TEAM'] as EntryType[]).map((t) => (
+          <button
+            key={t}
+            type="button"
+            onClick={() => setEntryType(t)}
+            className={`px-4 py-2 rounded text-xs font-bold transition-all ${
+              entryType === t ? 'bg-pink-600 text-white' : 'text-gray-500'
+            }`}
+          >
+            {t}
+          </button>
+        ))}
+      </div>
 
-    <div className="grid grid-cols-1 md:grid-cols-2 gap-8 items-end">
-
-      <div className="space-y-2">
-        <label className="text-xs font-bold text-pink-500 uppercase tracking-widest">Player 1 (Blue Side)</label>
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
         <select
           value={player1Id}
           onChange={(e) => setPlayer1Id(e.target.value)}
-          className="w-full bg-[#0f1115] border border-gray-700 rounded-lg px-4 py-3 text-white focus:outline-none focus:border-pink-500 focus:ring-1 focus:ring-pink-500 transition-all appearance-none cursor-pointer"
-          required
+          className="bg-[#0f1115] border border-gray-700 p-3 rounded text-white"
         >
-          <option value="" disabled>Select a competitor...</option>
-          <optgroup label="Solo Players" className="bg-[#1a1d24] text-gray-300">
-            {MOCK_SOLOS.map(p => <option key={p.id} value={p.id}>{p.name}</option>)}
-          </optgroup>
-          <optgroup label="Teams" className="bg-[#1a1d24] text-gray-300">
-            {MOCK_TEAMS.map(t => <option key={t.id} value={t.id}>{t.name}</option>)}
-          </optgroup>
+          <option value="">Select Player 1</option>
+          {entryType === 'SOLO'
+            ? users?.map(u => <option key={u.id} value={u.id}>{u.name}</option>)
+            : teams?.map(t => <option key={t.id} value={t.id}>{t.name}</option>)
+          }
         </select>
-      </div>
 
-      <div className="hidden md:flex justify-center pb-2">
-        <span className="text-2xl font-black italic text-gray-700">VS</span>
-      </div>
-
-      <div className="space-y-2">
-        <label className="text-xs font-bold text-red-500 uppercase tracking-widest">Player 2 (Red Side)</label>
         <select
           value={player2Id}
           onChange={(e) => setPlayer2Id(e.target.value)}
-          className="w-full bg-[#0f1115] border border-gray-700 rounded-lg px-4 py-3 text-white focus:outline-none focus:border-red-500 focus:ring-1 focus:ring-red-500 transition-all appearance-none cursor-pointer"
-          required
+          className="bg-[#0f1115] border border-gray-700 p-3 rounded text-white"
         >
-          <option value="" disabled>Select a competitor...</option>
-          <optgroup label="Solo Players" className="bg-[#1a1d24] text-gray-300">
-            {MOCK_SOLOS.map(p => <option key={p.id} value={p.id}>{p.name}</option>)}
-          </optgroup>
-          <optgroup label="Teams" className="bg-[#1a1d24] text-gray-300">
-            {MOCK_TEAMS.map(t => <option key={t.id} value={t.id}>{t.name}</option>)}
-          </optgroup>
+          <option value="">Select Player 2</option>
+          {entryType === 'SOLO'
+            ? users?.map(u => <option key={u.id} value={u.id}>{u.name}</option>)
+            : teams?.map(t => <option key={t.id} value={t.id}>{t.name}</option>)
+          }
         </select>
       </div>
-    </div>
 
-    <div className="space-y-2">
-      <label className="text-xs font-bold text-gray-500 uppercase tracking-widest">Match Date</label>
-      <input
-        type="text"
-        value={matchDate}
-        onChange={(e) => setMatchDate(e.target.value)}
-        placeholder="e.g. Oct 24, 2024"
-        className="w-full bg-[#0f1115] border border-gray-700 rounded-lg px-4 py-3 text-white focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 transition-all"
-        required
-      />
-    </div>
-
-    <div className="pt-4 border-t border-gray-800">
       <button
         type="submit"
-        disabled={isSubmitting}
-        className="w-full bg-blue-600 hover:bg-blue-500 text-white py-4 rounded-xl font-black uppercase tracking-widest transition-all disabled:opacity-50 disabled:cursor-not-allowed shadow-[0_0_20px_rgba(37,99,235,0.2)]"
+        disabled={isSubmitting || !player1Id || !player2Id}
+        className="w-full bg-blue-600 py-4 rounded-xl font-black uppercase tracking-widest hover:bg-blue-500 disabled:opacity-50"
       >
-        {isSubmitting ? 'Creating Match...' : 'Deploy Match'}
+        {isSubmitting ? "Adding match..." : "Start Match"}
       </button>
-    </div>
-
-  </form>
-)
+    </form>
+  )
 }

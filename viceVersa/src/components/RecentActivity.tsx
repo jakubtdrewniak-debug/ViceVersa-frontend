@@ -2,73 +2,42 @@ import { Link } from "@tanstack/react-router";
 import { useQuery } from "@tanstack/react-query";
 import { useEffect } from "react";
 import { toast } from "react-toastify";
-import type { Match, TournamentDetails } from "../types.ts";
-
-const BASE_URL = "https://versa-backend-876198057788.europe-north2.run.app";
+import { useApi } from "../hooks/useApi";
+import type { MatchDto, TournamentDto } from "../types.ts";
 
 export function RecentActivity() {
+  const { callApi } = useApi();
 
-  const fetchData = async (endpoint: string) => {
-    try {
-      const res = await fetch(`${BASE_URL}${endpoint}`, {
-        method: "GET",
-        cache: "no-store",
-        headers: {
-          "Accept": "application/json",
-          "Content-Type": "application/json"
-        }
-      });
 
-      if (!res.ok) {
-        throw new Error(`Server returned ${res.status}`);
-      }
-
-      const contentType = res.headers.get("content-type");
-      if (!contentType || !contentType.includes("application/json")) {
-        // If this fires, we are hitting a proxy or a redirect, not the API
-        console.error("Non-JSON response received from:", endpoint);
-        throw new Error("Backend sent HTML instead of JSON.");
-      }
-
-      return await res.json();
-    } catch (err: any) {
-      console.error("Fetch failure:", err);
-      throw err;
-    }
-  };
-
-  // 2. MATCHES QUERY
   const {
     data: matches = [],
     isLoading: matchesLoading,
     isError: matchesError,
     error: matchErrorData
-  } = useQuery<Match[]>({
+  } = useQuery<MatchDto[]>({
     queryKey: ["matches", "recent"],
-    queryFn: () => fetchData('/api/matches')
+    queryFn: () => callApi('/matches'),
   });
 
-  // 3. TOURNAMENTS QUERY
   const {
     data: tournaments = [],
     isLoading: tournamentsLoading,
     isError: tournamentsError,
     error: tournamentsErrorData
-  } = useQuery<TournamentDetails[]>({
+  } = useQuery<TournamentDto[]>({
     queryKey: ["tournaments", "live"],
-    queryFn: () => fetchData('/api/tournaments')
+    queryFn: () => callApi('/tournaments'),
   });
 
-  // 4. TOASTS
   useEffect(() => {
-    if (matchesError) toast.error(`Matches: ${matchErrorData?.message}`);
-    if (tournamentsError) toast.error(`Tournaments: ${tournamentsErrorData?.message}`);
+    if (matchesError) toast.error(`Matches Error: ${matchErrorData instanceof Error ? matchErrorData.message : 'Fetch failed'}`);
+    if (tournamentsError) toast.error(`Tournaments Error: ${tournamentsErrorData instanceof Error ? tournamentsErrorData.message : 'Fetch failed'}`);
   }, [matchesError, tournamentsError, matchErrorData, tournamentsErrorData]);
 
   if (matchesLoading || tournamentsLoading) {
     return (
-      <div className="container mx-auto p-8 mt-10 text-center text-gray-400 font-bold animate-pulse">
-        Connecting to Vice Versus Cloud...
+      <div className="container mx-auto p-8 mt-10 text-center text-pink-500 font-black animate-pulse">
+        SYNCING WITH VICE VERSA CLOUD...
       </div>
     );
   }
@@ -76,32 +45,38 @@ export function RecentActivity() {
   return (
     <div className="container mx-auto p-8 grid grid-cols-1 md:grid-cols-2 gap-12 mt-10 font-sans">
       <section>
-        <h2 className="text-2xl font-bold mb-6 text-white">Recent Matches</h2>
+        <div className="flex items-center justify-between mb-6">
+          <h2 className="text-2xl font-bold text-white tracking-tight">Recent Matches</h2>
+          <div className="h-1 flex-grow mx-4 bg-gradient-to-r from-pink-500/20 to-transparent rounded"></div>
+        </div>
+
         <div className="space-y-4">
           {matches.length === 0 ? (
-            <p className="text-gray-500 italic">No recent matches found in database.</p>
+            <p className="text-gray-500 italic bg-[#1a1d24] p-4 rounded-xl border border-gray-800">No activity in the arena yet.</p>
           ) : (
             matches.map((match) => (
               <div key={match.id}
-                   className="bg-[#1a1d24] p-4 rounded-xl shadow-sm flex justify-between items-center border border-gray-800 hover:border-pink-500 transition-colors">
-                <div className="flex items-center gap-2 text-white">
-                  <span className="font-medium">{match.player1?.name || 'TBD'}</span>
-                  <span className="text-gray-500 text-sm mx-2 font-bold">VS</span>
-                  <span className="font-medium">{match.player2?.name || 'TBD'}</span>
+                   className="bg-[#1a1d24] p-4 rounded-xl flex justify-between items-center border border-gray-800 hover:border-pink-500/50 transition-all group shadow-lg">
+                <div className="flex items-center gap-3 text-white">
+                  <span className={`font-bold ${match.winner?.id === match.player1?.id ? 'text-pink-500' : ''}`}>
+                    {match.player1?.name || 'TBD'}
+                  </span>
+                  <span className="text-gray-600 text-[10px] font-black uppercase tracking-widest">VS</span>
+                  <span className={`font-bold ${match.winner?.id === match.player2?.id ? 'text-pink-500' : ''}`}>
+                    {match.player2?.name || 'TBD'}
+                  </span>
                 </div>
 
                 <div className="flex items-center gap-4">
-                  {match.score && (
-                    <span className="font-black text-white bg-[#0f1115] px-3 py-1 rounded-lg border border-gray-800">
-                        {match.score.p1} - {match.score.p2}
-                      </span>
-                  )}
+                  <div className="bg-[#0f1115] px-3 py-1 rounded border border-gray-800 font-mono text-sm text-pink-500">
+                    {match.score.scoreP1} - {match.score.scoreP2}
+                  </div>
                   <Link
                     to="/match/$matchId"
                     params={{ matchId: match.id }}
-                    className="bg-[#2a2d35] hover:bg-pink-600 text-white px-4 py-2 rounded-lg text-sm font-bold transition-colors"
+                    className="bg-gray-800 hover:bg-pink-600 text-white px-3 py-1.5 rounded text-xs font-black uppercase transition-colors"
                   >
-                    Details
+                    View
                   </Link>
                 </div>
               </div>
@@ -111,28 +86,31 @@ export function RecentActivity() {
       </section>
 
       <section>
-        <h2 className="text-2xl font-bold mb-6 text-white">Live Tournaments</h2>
+        <div className="flex items-center justify-between mb-6">
+          <h2 className="text-2xl font-bold text-white tracking-tight">Live Tournaments</h2>
+          <div className="h-1 flex-grow mx-4 bg-gradient-to-r from-blue-500/20 to-transparent rounded"></div>
+        </div>
+
         <div className="space-y-4">
           {tournaments.length === 0 ? (
-            <p className="text-gray-500 italic">No tournaments found in database.</p>
+            <p className="text-gray-500 italic bg-[#1a1d24] p-4 rounded-xl border border-gray-800">The brackets are empty for now.</p>
           ) : (
-            tournaments.map((tournament) => (
-              <div key={tournament.id}
-                   className="bg-[#1a1d24] p-4 rounded-xl shadow-sm flex justify-between items-center border border-gray-800 hover:border-pink-500 transition-colors">
+            tournaments.map((t) => (
+              <div key={t.id}
+                   className="bg-[#1a1d24] p-4 rounded-xl flex justify-between items-center border border-gray-800 hover:border-blue-500/50 transition-all shadow-lg">
                 <div className="flex flex-col">
-                  <span className="font-bold text-white text-lg">{tournament.name}</span>
-                  <span className="text-xs text-pink-500 font-bold tracking-widest uppercase">{tournament.game}</span>
+                  <span className="font-black text-white text-lg leading-tight uppercase">{t.name}</span>
+                  <span className="text-[10px] text-pink-500 font-black tracking-[0.2em] uppercase">{t.game}</span>
                 </div>
 
-                <div className="flex items-center gap-4">
-                    <span
-                      className="bg-yellow-500/10 text-yellow-500 border border-yellow-500/20 px-3 py-1 rounded-lg text-xs font-bold flex items-center gap-1">
-                      {tournament.status}
-                    </span>
+                <div className="flex items-center gap-3">
+                  <span className="bg-blue-500/10 text-blue-400 border border-blue-500/20 px-2 py-1 rounded text-[10px] font-black uppercase">
+                    {t.status}
+                  </span>
                   <Link
                     to="/tournament/$tournamentId"
-                    params={{ tournamentId: tournament.id }}
-                    className="bg-[#2a2d35] hover:bg-pink-600 text-white px-4 py-2 rounded-lg text-sm font-bold transition-colors"
+                    params={{ tournamentId: t.id }}
+                    className="bg-gray-800 hover:bg-blue-600 text-white px-3 py-1.5 rounded text-xs font-black uppercase transition-colors"
                   >
                     Bracket
                   </Link>
