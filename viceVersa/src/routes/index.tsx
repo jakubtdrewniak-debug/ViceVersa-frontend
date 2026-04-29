@@ -20,7 +20,7 @@ function Dashboard() {
   }
   return <>
     <div>
-      <div className="flex items-center justify-between">
+      <div className="flex items-center justify-around">
         <div>
           <h1 className="text-3xl font-black tracking-tight">Your Hub</h1>
           <p className="text-gray-400 mt-1">Manage tournaments, teams, and matches.</p>

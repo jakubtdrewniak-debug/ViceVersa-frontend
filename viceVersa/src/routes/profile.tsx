@@ -1,6 +1,5 @@
 import { createFileRoute } from "@tanstack/react-router"
 import { useAuth0 } from "@auth0/auth0-react"
-import { useState } from "react"
 
 export const Route = createFileRoute("/profile")({
   component: ProfileRoute,
@@ -10,156 +9,113 @@ export const Route = createFileRoute("/profile")({
 function ProfileRoute() {
   const { user, isAuthenticated, isLoading } = useAuth0()
 
-  const [isEditing, setIsEditing] = useState(false)
-  const [username, setUsername] = useState(user?.name || "")
-  const [primaryGame, setPrimaryGame] = useState("Super Smash Bros. Ultimate") // Default mock game
-  const [bio, setBio] = useState("Ready to compete!")
-  const [isSaving, setIsSaving] = useState(false)
-
   if (isLoading) {
-    return <div className="min-h-screen bg-[#050505] text-white flex items-center justify-center">Loading Profile...</div>
-  }
-
-  if (!isAuthenticated || !user) {
     return (
-      <div className="min-h-screen bg-[#050505] flex items-center justify-center p-6 text-center">
-        <p className="text-gray-400">Please log in to view your profile.</p>
+      <div className="min-h-screen bg-[#050505] flex items-center justify-center">
+        <span className="text-pink-500 font-black animate-pulse uppercase tracking-[0.4em]">
+          Retrieving Personnel Data...
+        </span>
       </div>
     )
   }
 
-  const handleSave = () => {
-    setIsSaving(true)
-
-    // Simulate an API call to your future backend
-    setTimeout(() => {
-      setIsSaving(false)
-      setIsEditing(false)
-    }, 800)
+  if (!isAuthenticated || !user) {
+    return (
+      <div className="min-h-screen bg-[#050505] flex items-center justify-center p-6 text-center text-gray-500 font-black uppercase text-[10px] tracking-widest">
+        Clearance Required // Log in to view identity
+      </div>
+    )
   }
 
   return (
     <div className="min-h-screen bg-[#050505] text-white p-6 md:p-12 font-sans flex justify-center">
-      <div className="w-full max-w-3xl space-y-8">
+      <div className="w-full max-w-2xl space-y-8">
 
-        {/* Page Header */}
-        <div>
-          <h1 className="text-3xl font-black tracking-tight text-white">Profile Settings</h1>
-          <p className="text-gray-400 mt-1">Manage your account details and player information.</p>
+        <div className="border-b border-[#1a1d24] pb-6">
+          <h1 className="text-4xl font-black tracking-tighter uppercase italic">Personnel File</h1>
+          <p className="text-gray-600 font-bold text-[9px] uppercase tracking-[0.4em] mt-1">
+            Verified Identity & Arena Credentials
+          </p>
         </div>
 
-        {/* The Profile Card */}
-        <div className="bg-[#1a1d24] rounded-2xl border border-gray-800 overflow-hidden shadow-2xl">
+        <div className="bg-[#0f1115] rounded-3xl border border-[#1a1d24] overflow-hidden shadow-2xl relative">
 
-          {/* Banner Gradient */}
-          <div className="h-32 bg-gradient-to-r from-pink-600 to-purple-600 relative"></div>
+          <div className="h-40 bg-gradient-to-br from-pink-600/40 via-purple-900/40 to-black relative">
+            <div className="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/carbon-fibre.png')] opacity-20"></div>
+          </div>
 
-          <div className="px-8 pb-8 relative">
-            {/* Avatar - Shifted up to overlap the banner */}
-            <div className="absolute -top-12 border-4 border-[#1a1d24] rounded-xl bg-gray-800 w-24 h-24 overflow-hidden shadow-lg">
+          <div className="px-10 pb-12 relative">
+
+            <div className="absolute -top-16 border-4 border-[#0f1115] rounded-2xl bg-gray-900 w-32 h-32 overflow-hidden shadow-[0_0_30px_rgba(0,0,0,0.5)] flex items-center justify-center">
               {user.picture ? (
-                <img src={user.picture} alt={user.name} className="w-full h-full object-cover" />
-              ) : (
-                <span className="text-3xl font-bold flex items-center justify-center h-full text-gray-400">
-                  {user.name?.[0] || '?'}
-                </span>
-              )}
+                <img
+                  src={user.picture}
+                  alt=""
+                  className="w-full h-full object-cover"
+                  onError={(e) => (e.currentTarget.style.display = 'none')}
+                />
+              ) : null}
+              <span className="absolute text-4xl font-black text-gray-800 uppercase">
+                {user.name?.[0] || user.email?.[0]}
+              </span>
             </div>
 
-            <div className="flex justify-end pt-4 pb-6">
-              {!isEditing ? (
-                <button
-                  onClick={() => setIsEditing(true)}
-                  className="bg-[#2a2d35] hover:bg-gray-700 text-white px-6 py-2 rounded-lg font-bold text-sm transition-colors border border-gray-700"
-                >
-                  Edit Profile
-                </button>
-              ) : (
-                <button
-                  onClick={() => setIsEditing(false)}
-                  className="text-gray-400 hover:text-white px-6 py-2 font-bold text-sm transition-colors"
-                >
-                  Cancel
-                </button>
-              )}
-            </div>
+            <div className="pt-20 space-y-8">
 
-            <form action={handleSave} className="space-y-6">
-
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-
-                <div className="space-y-2">
-                  <label className="text-xs font-bold text-gray-500 uppercase tracking-widest">Display Name</label>
-                  {isEditing ? (
-                    <input
-                      type="text"
-                      value={username}
-                      onChange={(e) => setUsername(e.target.value)}
-                      className="w-full bg-[#0f1115] border border-gray-700 rounded-lg px-4 py-3 text-white focus:outline-none focus:border-pink-500 focus:ring-1 focus:ring-pink-500 transition-all"
-                      required
-                    />
-                  ) : (
-                    <p className="text-lg font-medium bg-[#0f1115]/50 border border-transparent rounded-lg px-4 py-3">{username}</p>
-                  )}
+              <div className="flex flex-col md:flex-row md:items-end justify-between gap-6">
+                <div>
+                  <label className="text-[9px] font-black text-pink-500 uppercase tracking-[0.3em] mb-1 block">
+                    Designation
+                  </label>
+                  <h2 className="text-4xl font-black uppercase tracking-tighter text-white">
+                    {user.name || "UNREGISTERED_ENTITY"}
+                  </h2>
                 </div>
 
-                <div className="space-y-2">
-                  <label className="text-xs font-bold text-gray-500 uppercase tracking-widest">Main Game</label>
-                  {isEditing ? (
-                    <input
-                      type="text"
-                      value={primaryGame}
-                      onChange={(e) => setPrimaryGame(e.target.value)}
-                      placeholder="e.g. Tekken 8, Smash Ultimate..."
-                      className="w-full bg-[#0f1115] border border-gray-700 rounded-lg px-4 py-3 text-white focus:outline-none focus:border-pink-500 focus:ring-1 focus:ring-pink-500 transition-all"
-                    />
-                  ) : (
-                    <p className="text-lg font-medium bg-[#0f1115]/50 border border-transparent rounded-lg px-4 py-3">
-                      {primaryGame || <span className="text-gray-500 italic">No game specified</span>}
-                    </p>
-                  )}
-                </div>
-
-              </div>
-
-              <div className="space-y-2">
-                <label className="text-xs font-bold text-gray-500 uppercase tracking-widest flex justify-between">
-                  Email Address <span className="text-pink-500 text-[10px]">Managed by Auth0</span>
-                </label>
-                <p className="text-lg font-medium text-gray-400 bg-[#0f1115]/30 border border-gray-800/50 rounded-lg px-4 py-3 cursor-not-allowed">
-                  {user.email}
-                </p>
-              </div>
-
-              <div className="space-y-2">
-                <label className="text-xs font-bold text-gray-500 uppercase tracking-widest">Player Bio</label>
-                {isEditing ? (
-                  <textarea
-                    value={bio}
-                    onChange={(e) => setBio(e.target.value)}
-                    rows={3}
-                    className="w-full bg-[#0f1115] border border-gray-700 rounded-lg px-4 py-3 text-white focus:outline-none focus:border-pink-500 focus:ring-1 focus:ring-pink-500 transition-all resize-none"
-                  />
-                ) : (
-                  <p className="text-base text-gray-300 bg-[#0f1115]/50 border border-transparent rounded-lg px-4 py-3 min-h-[80px]">
-                    {bio}
+                <div className="text-left md:text-right">
+                  <label className="text-[9px] font-black text-gray-600 uppercase tracking-[0.3em] mb-1 block">
+                    Access Level
+                  </label>
+                  <p className="text-sm font-black text-white uppercase tracking-widest">
+                    Standard Combatant
                   </p>
-                )}
+                </div>
               </div>
 
-              {isEditing && (
-                <div className="pt-4 border-t border-gray-800">
-                  <button
-                    type="submit"
-                    disabled={isSaving}
-                    className="bg-pink-600 hover:bg-pink-500 text-white px-8 py-3 rounded-lg font-bold transition-colors disabled:opacity-50 flex items-center justify-center shadow-[0_0_15px_rgba(219,39,119,0.3)] w-full md:w-auto"
-                  >
-                    {isSaving ? 'Saving...' : 'Save Changes'}
-                  </button>
-                </div>
-              )}
-            </form>
+              <div className="h-px bg-gradient-to-r from-gray-800 to-transparent"></div>
 
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+                <div>
+                  <label className="text-[9px] font-black text-gray-600 uppercase tracking-[0.3em] mb-1 block">
+                    Uplink Address
+                  </label>
+                  <p className="text-xs font-bold text-gray-400 uppercase tracking-widest bg-[#1a1d24]/50 p-3 rounded-lg border border-gray-800/50">
+                    {user.email}
+                  </p>
+                </div>
+
+                <div>
+                  <label className="text-[9px] font-black text-gray-600 uppercase tracking-[0.3em] mb-1 block">
+                    System ID
+                  </label>
+                  <p className="text-[10px] font-mono text-gray-500 break-all bg-[#1a1d24]/50 p-3 rounded-lg border border-gray-800/50">
+                    {user.sub}
+                  </p>
+                </div>
+              </div>
+
+            </div>
+          </div>
+
+          <div className="bg-[#14161b] px-10 py-4 border-t border-gray-800/50 flex justify-between items-center">
+            <span className="text-[8px] font-black text-gray-700 uppercase tracking-[0.5em]">
+              Vice Versus Protocol // 2026
+            </span>
+            <div className="flex gap-1">
+              <div className="w-1 h-1 bg-pink-500 rounded-full"></div>
+              <div className="w-1 h-1 bg-gray-800 rounded-full"></div>
+              <div className="w-1 h-1 bg-gray-800 rounded-full"></div>
+            </div>
           </div>
         </div>
 

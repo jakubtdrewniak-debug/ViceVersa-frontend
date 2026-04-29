@@ -1,49 +1,24 @@
-/* eslint-disable react-refresh/only-export-components */
-import { createFileRoute, useNavigate, Link } from '@tanstack/react-router'
-import { useState } from 'react'
-import {CreateTeamForm} from "../components/CreateTeam.tsx";
-import type {TeamFormData} from "../types.ts";
-
+import { createFileRoute, Link } from '@tanstack/react-router'
+import { CreateTeamForm } from "../components/CreateTeam"
 
 export const Route = createFileRoute('/create-team')({
   component: CreateTeamRoute,
 })
 
+// eslint-disable-next-line react-refresh/only-export-components
 function CreateTeamRoute() {
-  const navigate = useNavigate()
-  const [isSubmitting, setIsSubmitting] = useState(false)
-
-  const handleCreateTeam = async (data: TeamFormData) => {
-    setIsSubmitting(true)
-    try {
-      console.log('Saving Team to DB:', data)
-
-      await new Promise((resolve) => setTimeout(resolve, 1000))
-
-
-      navigate({ to: '/' })
-    } catch (error) {
-      console.error("Failed to create team:", error)
-    } finally {
-      setIsSubmitting(false)
-    }
-  }
-
   return (
     <div className="min-h-screen bg-[#050505] flex flex-col items-center justify-center p-6">
       <div className="w-full max-w-md mb-6">
         <Link
-          to="/"
-          className="text-pink-500 hover:text-pink-400 font-bold text-sm tracking-widest uppercase inline-block"
+          to="/teams"
+          className="text-blue-500 hover:text-blue-400 font-black text-[10px] tracking-[0.2em] uppercase transition-all"
         >
-          ← Back to Dashboard
+          ← Back to Squad Index
         </Link>
       </div>
 
-      <CreateTeamForm
-        onSubmit={handleCreateTeam}
-        isSubmitting={isSubmitting}
-      />
+      <CreateTeamForm />
     </div>
   )
 }

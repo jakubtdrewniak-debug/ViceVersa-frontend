@@ -61,7 +61,6 @@ export function AdminControlCenter() {
 
   return (
     <div className="space-y-12 pb-20 max-w-6xl mx-auto px-4">
-      {/* --- TEAMS MANAGEMENT --- */}
       <section className="space-y-4">
         <div className="flex items-center justify-between">
           <h2 className="text-xl font-black uppercase tracking-widest text-pink-500 flex items-center gap-3">
