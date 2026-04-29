@@ -1,0 +1,25 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+  <rect width="512" height="512" rx="120" fill="#0f1115" />
+  
+  <defs>
+    <linearGradient id="vsGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#ec4899" />
+      <stop offset="100%" stop-color="#9333ea" />
+    </linearGradient>
+  </defs>
+
+  <text
+    x="48%" 
+    y="54%" 
+    dominant-baseline="middle" 
+    text-anchor="middle" 
+    fill="url(#vsGrad)" 
+    font-family="system-ui, -apple-system, sans-serif" 
+    font-weight="900" 
+    font-size="300" 
+    font-style="italic" 
+    letter-spacing="-15"
+  >
+    VS
+  </text>
+</svg>
