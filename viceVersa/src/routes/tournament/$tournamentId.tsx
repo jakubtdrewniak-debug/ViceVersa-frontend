@@ -1,22 +1,13 @@
-/* eslint-disable react-refresh/only-export-components */
 import { createFileRoute, Link } from '@tanstack/react-router'
 import { TournamentView } from '../../components/TournamentView'
-import { MOCK_LIVE_TOURNAMENT, MOCK_UPCOMING_TOURNAMENT, MOCK_COMPLETED_TOURNAMENT } from '../../lib/mockData'
 
 export const Route = createFileRoute('/tournament/$tournamentId')({
   component: TournamentDetailRoute,
 })
 
-const ALL_T = [
-  MOCK_LIVE_TOURNAMENT,
-  MOCK_UPCOMING_TOURNAMENT,
-  MOCK_COMPLETED_TOURNAMENT
-]
-
+// eslint-disable-next-line react-refresh/only-export-components
 function TournamentDetailRoute() {
   const { tournamentId } = Route.useParams()
-
- const data = ALL_T.find(t => t.id === tournamentId) || MOCK_UPCOMING_TOURNAMENT
 
   return (
     <div className="min-h-screen bg-[#050505] text-white p-8 font-sans">
@@ -24,12 +15,12 @@ function TournamentDetailRoute() {
 
         <Link
           to="/"
-          className="text-pink-500 hover:text-pink-400 font-bold text-sm tracking-widest uppercase inline-block mb-4"
+          className="text-pink-500 hover:text-pink-400 font-bold text-sm tracking-widest uppercase inline-block mb-4 transition-colors"
         >
           ← Back to Dashboard
         </Link>
 
-        <TournamentView tournament={data} />
+        <TournamentView tournamentId={tournamentId} />
 
       </div>
     </div>

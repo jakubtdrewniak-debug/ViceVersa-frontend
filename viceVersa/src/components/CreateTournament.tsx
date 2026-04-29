@@ -37,6 +37,7 @@ export function CreateTournament() {
 
   useEffect(() => {
     if (isAuthenticated && user?.sub && entryType === 'solo' && participants.length === 0) {
+      // eslint-disable-next-line react-hooks/set-state-in-effect
       setParticipants([{
         id: user.sub,
         name: user.name || "Creator",

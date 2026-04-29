@@ -14,6 +14,7 @@ export interface ParticipantDto {
   name: string;
   avatar?: string;
   isTeam: boolean;
+  members?: UserDto[];
 }
 export interface MatchScoreDto {
   scoreP1: number;
@@ -49,6 +50,7 @@ export interface TournamentDto {
   status: TournamentStatus;
   winnerId: string | null;
   matches: MatchDto[];
+  format?: string;
 }
 
 export interface TournamentFormData {
