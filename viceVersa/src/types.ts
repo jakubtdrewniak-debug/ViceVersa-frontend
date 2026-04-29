@@ -36,10 +36,10 @@ export interface MatchDto {
   status: MatchStatus;
   player1: ParticipantDto | null;
   player2: ParticipantDto | null;
-  winnerId: string | null;
+  winner: ParticipantDto | null;
   score: MatchScoreDto;
-  player1Slot: boolean;
-  nextMatchId: string | null;
+  player1Slot?: boolean;
+  nextMatchId?: string | null;
 }
 
 export interface TournamentDto {

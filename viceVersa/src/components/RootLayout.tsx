@@ -61,7 +61,7 @@ export const RootLayout = () => {
                 className="flex items-center justify-center hover:opacity-80 transition-opacity focus:outline-none"
               >
                 {user?.picture ? (
-                  <img src={user.picture} alt=""
+                  <img src={user.picture} alt="" referrerPolicy="no-referrer"
                        className="w-10 h-10 rounded-lg border-2 border-gray-700 hover:border-pink-500 transition-colors object-cover"/>
                 ) : (
                   <div className="w-10 h-10 rounded-lg bg-gray-800 border-2 border-gray-700 hover:border-pink-500 transition-colors flex items-center justify-center">

@@ -3,6 +3,7 @@ import { useNavigate } from "@tanstack/react-router"
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query"
 import { useApi } from "../hooks/useApi"
 import type { MatchDto, UserDto, TeamDto, EntryType } from "../types"
+import {toast} from "react-toastify";
 
 export function CreateMatch() {
   const navigate = useNavigate()
@@ -34,7 +35,8 @@ export function CreateMatch() {
       queryClient.invalidateQueries({ queryKey: ['matches'] })
       navigate({ to: `/match/${data.id}` })
     },
-    onError: (err: Error) => alert(`Deployment failed: ${err.message}`),
+    // Changed to standard toast/alert styling to match your other components
+    onError: (err: Error) => toast.error(`Deployment failed: ${err.message}`),
   })
 
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
@@ -46,28 +48,31 @@ export function CreateMatch() {
     })
   }
 
-  if (loadingUsers || loadingTeams) return (
-    <div className="p-10 text-pink-500 font-black animate-pulse uppercase tracking-widest text-center">
-      Syncing Roster Data...
-    </div>
-  )
+  const isLoading = loadingUsers || loadingTeams;
 
   return (
-    <form onSubmit={handleSubmit} className="bg-[#1a1d24] p-8 rounded-2xl border border-gray-800 space-y-8 shadow-2xl max-w-2xl mx-auto">
-      <div className="space-y-2">
-        <label className="text-[10px] font-black uppercase tracking-[0.2em] text-gray-500 ml-1">Format</label>
-        <div className="flex bg-[#0f1115] p-1 rounded-lg border border-gray-800 w-fit">
+    <form
+      onSubmit={handleSubmit}
+      className="bg-[#0f1115] text-white p-8 rounded-3xl w-full space-y-8 font-sans border border-[#1a1d24] shadow-2xl"
+    >
+
+      <div className="space-y-3">
+        <label className="text-pink-500 text-[10px] font-black tracking-widest uppercase ml-1">Format Setup</label>
+        <div className="flex bg-[#1a1d24] p-1.5 rounded-xl border border-gray-800 w-full">
           {(['SOLO', 'TEAM'] as EntryType[]).map((t) => (
             <button
               key={t}
               type="button"
+              disabled={isLoading}
               onClick={() => {
                 setEntryType(t)
                 setPlayer1Id("")
                 setPlayer2Id("")
               }}
-              className={`px-8 py-2 rounded text-[10px] font-black uppercase tracking-widest transition-all ${
-                entryType === t ? 'bg-pink-600 text-white shadow-lg' : 'text-gray-500 hover:text-white'
+              className={`flex-1 py-3 rounded-lg text-[10px] font-black uppercase tracking-widest transition-all disabled:opacity-50 ${
+                entryType === t
+                  ? 'bg-pink-600 text-white shadow-lg shadow-pink-600/20'
+                  : 'text-gray-500 hover:text-white'
               }`}
             >
               {t}
@@ -76,15 +81,17 @@ export function CreateMatch() {
         </div>
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-        <div className="space-y-2">
-          <label className="text-[10px] font-black uppercase tracking-[0.2em] text-gray-500 ml-1">Competitor 1</label>
+      <div className="space-y-4 pt-4 border-t border-gray-800/50 relative">
+
+        <div className="space-y-3">
+          <label className="text-gray-500 text-[10px] font-black tracking-widest uppercase ml-1">Competitor 1</label>
           <select
             value={player1Id}
             onChange={(e) => setPlayer1Id(e.target.value)}
-            className="w-full bg-[#0f1115] border border-gray-700 p-4 rounded-xl text-white font-bold focus:border-pink-500 outline-none transition-colors appearance-none"
+            disabled={isLoading}
+            className="w-full bg-[#1a1d24] border border-gray-800 rounded-xl p-4 text-white font-bold outline-none focus:border-pink-500 transition-all appearance-none truncate cursor-pointer disabled:opacity-50"
           >
-            <option value="">Select Participant</option>
+            <option value="">{isLoading ? "SYNCING ROSTER..." : "SELECT COMBATANT..."}</option>
             {entryType === 'SOLO'
               ? users?.map(u => <option key={u.id} value={u.id}>{u.name}</option>)
               : teams?.map(t => <option key={t.id} value={t.id}>{t.name}</option>)
@@ -92,35 +99,47 @@ export function CreateMatch() {
           </select>
         </div>
 
-        <div className="space-y-2">
-          <label className="text-[10px] font-black uppercase tracking-[0.2em] text-gray-500 ml-1">Competitor 2</label>
+        <div className="flex justify-center -my-1 relative z-10 pointer-events-none">
+           <span className="bg-[#0f1115] text-pink-500 text-[10px] font-black italic tracking-[0.4em] px-4 py-1.5 border border-gray-800 rounded-full shadow-lg">
+             VS
+           </span>
+        </div>
+
+        {/* PLAYER 2 */}
+        <div className="space-y-3">
+          <label className="text-gray-500 text-[10px] font-black tracking-widest uppercase ml-1">Competitor 2</label>
           <select
             value={player2Id}
             onChange={(e) => setPlayer2Id(e.target.value)}
-            className="w-full bg-[#0f1115] border border-gray-700 p-4 rounded-xl text-white font-bold focus:border-pink-500 outline-none transition-colors appearance-none"
+            disabled={isLoading}
+            className="w-full bg-[#1a1d24] border border-gray-800 rounded-xl p-4 text-white font-bold outline-none focus:border-pink-500 transition-all appearance-none truncate cursor-pointer disabled:opacity-50"
           >
-            <option value="">Select Participant</option>
+            <option value="">{isLoading ? "SYNCING ROSTER..." : "SELECT COMBATANT..."}</option>
             {entryType === 'SOLO'
               ? users?.map(u => <option key={u.id} value={u.id}>{u.name}</option>)
               : teams?.map(t => <option key={t.id} value={t.id}>{t.name}</option>)
             }
           </select>
         </div>
+
       </div>
 
-      <button
-        type="submit"
-        disabled={isSubmitting || !player1Id || !player2Id || player1Id === player2Id}
-        className="w-full bg-pink-600 py-4 rounded-xl font-black uppercase tracking-[0.2em] text-sm hover:bg-pink-500 disabled:opacity-30 disabled:grayscale transition-all shadow-[0_0_20px_rgba(219,39,119,0.2)]"
-      >
-        {isSubmitting ? "Generating Match..." : "Initialize Match"}
-      </button>
+      <div className="pt-2">
+        <button
+          type="submit"
+          disabled={isSubmitting || !player1Id || !player2Id || player1Id === player2Id}
+          className="w-full bg-white text-black font-black text-sm tracking-[0.2em] py-5 rounded-xl hover:bg-pink-500 hover:text-white transition-all shadow-[0_0_20px_rgba(255,255,255,0.1)] hover:shadow-[0_0_20px_rgba(219,39,119,0.3)] disabled:opacity-30 disabled:grayscale uppercase"
+        >
+          {isSubmitting ? "UPLOADING PARAMETERS..." : "INITIALIZE MATCH"}
+        </button>
 
-      {player1Id && player2Id && player1Id === player2Id && (
-        <p className="text-red-500 text-[10px] font-bold uppercase text-center tracking-widest">
-          A participant cannot battle themselves
-        </p>
-      )}
+        {player1Id && player2Id && player1Id === player2Id && (
+          <p className="text-red-500 text-[9px] font-black uppercase text-center tracking-[0.2em] mt-4 animate-pulse">
+            Error: Combatant cannot target themselves
+          </p>
+        )}
+      </div>
+
     </form>
   )
 }

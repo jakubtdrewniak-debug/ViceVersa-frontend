@@ -40,7 +40,7 @@ export function RecentActivity() {
       <div className="flex items-center gap-2 min-w-0">
         <div className={`w-6 h-6 shrink-0 bg-gray-900 border border-gray-800 overflow-hidden flex items-center justify-center ${p.isTeam ? 'rounded-md' : 'rounded-full'}`}>
           {p.avatar ? (
-            <img src={p.avatar} alt={p.name} className="w-full h-full object-cover" />
+            <img src={p.avatar} alt="" referrerPolicy="no-referrer" className="w-full h-full object-cover" />
           ) : (
             <span className="text-[8px] font-black text-gray-600">{p.name.charAt(0)}</span>
           )}

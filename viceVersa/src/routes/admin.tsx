@@ -66,7 +66,7 @@ function AdminRoute() {
               {user?.picture && user.picture.length > 0 ? (
                 <img
                   src={user.picture}
-                  alt=""
+                  alt="" referrerPolicy="no-referrer"
                   className="w-full h-full object-cover grayscale opacity-80"
                   onError={(e) => (e.currentTarget.style.display = 'none')}
                 />

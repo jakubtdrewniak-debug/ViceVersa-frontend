@@ -50,7 +50,7 @@ function ProfileRoute() {
               {user.picture ? (
                 <img
                   src={user.picture}
-                  alt=""
+                  alt="" referrerPolicy="no-referrer"
                   className="w-full h-full object-cover"
                   onError={(e) => (e.currentTarget.style.display = 'none')}
                 />

@@ -115,8 +115,8 @@ export function CreateTournament() {
     <form onSubmit={handleFormSubmit} className="bg-[#0f1115] text-white p-8 rounded-2xl w-full max-w-md mx-auto space-y-8 font-sans border border-[#1a1d24] shadow-2xl">
 
       <header className="text-center space-y-1">
-        <h2 className="text-2xl font-black uppercase tracking-tighter">Host Operation</h2>
-        <p className="text-[10px] text-pink-500 font-black tracking-[0.3em] uppercase">Bracket Configuration Utility</p>
+        <h2 className="text-2xl font-black uppercase tracking-tighter italic">Host Tournament</h2>
+        <p className="text-[10px] text-pink-500 font-black tracking-[0.3em] uppercase">We'll take care of the brackets for you</p>
       </header>
 
       <div className="flex bg-[#1a1d24] rounded-xl p-1 border border-gray-800 shadow-inner">
@@ -175,7 +175,7 @@ export function CreateTournament() {
               <div className="flex items-center gap-3">
                 <div className={`w-8 h-8 flex items-center justify-center overflow-hidden bg-gray-900 border border-gray-800 ${entryType === 'TEAM' ? 'rounded-lg' : 'rounded-full'}`}>
                   {p.avatar ? (
-                    <img src={p.avatar} alt={p.name} className="w-full h-full object-cover"/>
+                    <img src={p.avatar} alt="" referrerPolicy="no-referrer" className="w-full h-full object-cover"/>
                   ) : (
                     <span className="text-[10px] font-black text-gray-700 uppercase">{p.name.charAt(0)}</span>
                   )}

@@ -134,7 +134,7 @@ export function TournamentView({ tournamentId }: Props) {
 
               <div className={`w-16 h-16 bg-gray-800 border border-gray-700 flex items-center justify-center overflow-hidden shadow-inner group-hover:scale-105 transition-transform ${p.isTeam ? 'rounded-xl' : 'rounded-full'}`}>
                 {p.avatar ? (
-                  <img src={p.avatar} alt={p.name} className="w-full h-full object-cover" />
+                  <img src={p.avatar} alt="" referrerPolicy="no-referrer" className="w-full h-full object-cover" />
                 ) : (
                   <span className="text-2xl font-black text-gray-400 uppercase">{p.name.charAt(0)}</span>
                 )}

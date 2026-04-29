@@ -105,7 +105,7 @@ export function TeamList({ filter }: TeamListProps) {
               <div className="flex items-center gap-5 mb-8">
                 <div className="w-20 h-20 bg-[#0f1115] rounded-2xl flex items-center justify-center overflow-hidden shrink-0 shadow-inner border border-gray-800 group-hover:border-pink-500/30 transition-colors">
                   {team.avatar ? (
-                    <img src={team.avatar} alt={team.name} className="w-full h-full object-cover" />
+                    <img src={team.avatar} alt="" referrerPolicy="no-referrer" className="w-full h-full object-cover" />
                   ) : (
                     <span className="text-3xl font-black text-gray-700 uppercase">{team.name.charAt(0)}</span>
                   )}
@@ -133,7 +133,7 @@ export function TeamList({ filter }: TeamListProps) {
                       style={{ zIndex: 40 - i }}
                     >
                       {member.avatar ? (
-                        <img src={member.avatar} alt={member.name} className="w-full h-full object-cover" />
+                        <img src={member.avatar} alt="" referrerPolicy="no-referrer" className="w-full h-full object-cover" />
                       ) : (
                         <span className="text-[10px] font-black text-gray-500">{member.name.charAt(0)}</span>
                       )}

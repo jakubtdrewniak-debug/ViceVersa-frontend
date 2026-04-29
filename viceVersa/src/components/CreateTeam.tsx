@@ -21,7 +21,6 @@ export function CreateTeamForm() {
     queryFn: () => callApi("/users"),
   });
 
-
   useEffect(() => {
     if (isAuthenticated && user?.sub && members.length === 0) {
       const captain: UserDto = {
@@ -37,7 +36,6 @@ export function CreateTeamForm() {
 
   const { mutate: registerTeam, isPending: isSubmitting } = useMutation({
     mutationFn: async (payload: { name: string; members: UserDto[] }) => {
-
       const createdTeam: TeamDto = await callApi(
         `/teams?name=${encodeURIComponent(payload.name)}`,
         { method: "POST" }
@@ -52,7 +50,6 @@ export function CreateTeamForm() {
       );
 
       await Promise.all(addMemberPromises);
-
       return createdTeam;
     },
     onSuccess: (data) => {
@@ -60,17 +57,13 @@ export function CreateTeamForm() {
       queryClient.invalidateQueries({ queryKey: ["teams"] });
       navigate({ to: "/teams" });
     },
-    onError: (err: Error) => {
-      toast.error(`Failed to build team: ${err.message}`);
-    },
+    onError: (err: Error) => toast.error(`Failed to build team: ${err.message}`),
   });
 
   const handleAddMember = () => {
     if (!selectedUserId) return;
-
     const userToAdd = availableUsers.find((u) => u.id === selectedUserId);
     if (!userToAdd) return;
-
     if (members.some((m) => m.id === userToAdd.id)) {
       return toast.warn("This player is already on the roster!");
     }
@@ -95,61 +88,61 @@ export function CreateTeamForm() {
   return (
     <form
       onSubmit={handleFormSubmit}
-      className="bg-[#0f1115] text-white p-8 rounded-2xl w-full max-md mx-auto space-y-6 font-sans border border-[#1a1d24] shadow-2xl"
+      className="bg-[#0f1115] text-white p-8 rounded-3xl w-full max-w-md mx-auto space-y-8 font-sans border border-[#1a1d24] shadow-2xl"
     >
-      <div className="text-center mb-6">
-        <h2 className="text-2xl font-black tracking-tight uppercase italic">Establish Team</h2>
-        <p className="text-gray-500 text-[10px] font-bold tracking-[0.3em] uppercase">Vice Versa Roster Management</p>
+      <div className="space-y-1 text-center">
+        <h2 className="text-3xl font-black tracking-tighter uppercase italic">Establish Team</h2>
+        <p className="text-gray-500 text-[10px] font-black tracking-[0.3em] uppercase">Vice Versa Roster Management</p>
       </div>
 
-      <div className="space-y-2">
-        <label className="text-pink-500 text-[10px] font-black tracking-widest uppercase">Team Name</label>
+      <div className="space-y-3">
+        <label className="text-pink-500 text-[10px] font-black tracking-widest uppercase ml-1">Team Designation</label>
         <input
           value={teamName}
           onChange={(e) => setTeamName(e.target.value)}
           placeholder="e.g. BIKINI BOTTOM ALL-STARS"
-          className="w-full bg-[#1a1d24] border border-gray-800 rounded-lg p-4 text-white outline-none focus:border-pink-500 transition-all placeholder:text-gray-700"
+          className="w-full bg-[#1a1d24] border border-gray-800 rounded-xl p-4 text-white font-bold outline-none focus:border-pink-500 transition-all placeholder:text-gray-700"
           required
         />
       </div>
 
-      <div className="space-y-4 pt-2">
-        <label className="text-pink-500 text-[10px] font-black tracking-widest uppercase flex justify-between">
+      <div className="space-y-4 pt-4 border-t border-gray-800/50">
+        <label className="text-pink-500 text-[10px] font-black tracking-widest uppercase flex justify-between ml-1">
           <span>Active Roster</span>
-          <span className="text-gray-500">{members.length} Members</span>
+          <span className="text-gray-500">{members.length} Units</span>
         </label>
 
         <div className="space-y-2 max-h-52 overflow-y-auto pr-2 custom-scrollbar">
           {members.map((m, index) => (
-            <div key={m.id} className="flex items-center justify-between bg-[#1a1d24] p-3 rounded border border-gray-800/50 group">
-              <div className="flex items-center gap-3">
-                <div className="w-8 h-8 rounded-full overflow-hidden bg-gray-800 border border-gray-700 flex items-center justify-center">
+            <div key={m.id} className="flex items-center justify-between bg-[#1a1d24] p-4 rounded-xl border border-gray-800 transition-colors hover:border-gray-700">
+              <div className="flex items-center gap-4">
+                <div className="w-10 h-10 rounded-lg overflow-hidden bg-gray-900 border border-gray-700 flex items-center justify-center shrink-0">
                   {m.avatar ? (
-                    <img src={m.avatar} alt="" className="w-full h-full object-cover"/>
+                    <img src={m.avatar} alt="" referrerPolicy="no-referrer" className="w-full h-full object-cover"/>
                   ) : (
-                    <span className="text-[10px] font-bold">{m.name.charAt(0)}</span>
+                    <span className="text-[12px] font-black text-gray-500">{m.name.charAt(0)}</span>
                   )}
                 </div>
                 <div className="flex flex-col">
-                  <span className="font-bold text-sm">{m.name}</span>
-                  {index === 0 && <span className="text-[9px] text-yellow-500 font-black uppercase tracking-tighter">Captain / Founder</span>}
+                  <span className="font-black text-sm uppercase tracking-tight text-white">{m.name}</span>
+                  {index === 0 && <span className="text-[9px] text-yellow-500 font-black uppercase tracking-widest mt-0.5">Captain / Founder</span>}
                 </div>
               </div>
               {index !== 0 && (
-                <button type="button" onClick={() => removeMember(m.id)} className="text-gray-600 hover:text-red-500 transition-colors px-2">✕</button>
+                <button type="button" onClick={() => removeMember(m.id)} className="text-gray-600 hover:text-red-500 transition-colors p-2 font-bold">✕</button>
               )}
             </div>
           ))}
         </div>
 
-        <div className="flex gap-2 mt-4">
+        <div className="flex gap-2 pt-2">
           <select
             value={selectedUserId}
             onChange={(e) => setSelectedUserId(e.target.value)}
-            className="flex-1 bg-[#0f1115] border border-gray-800 rounded-lg p-3 text-white outline-none focus:border-gray-600 text-sm cursor-pointer appearance-none"
+            className="flex-1 bg-[#1a1d24] border border-gray-800 rounded-xl p-4 text-white outline-none focus:border-pink-500 text-sm font-bold cursor-pointer appearance-none truncate"
             disabled={loadingUsers}
           >
-            <option value="">{loadingUsers ? "Loading players..." : "Recruit Player..."}</option>
+            <option value="">{loadingUsers ? "SYNCING..." : "RECRUIT PLAYER..."}</option>
             {availableUsers
               .filter(u => u.id !== user?.sub)
               .map(u => (
@@ -161,7 +154,7 @@ export function CreateTeamForm() {
             type="button"
             onClick={handleAddMember}
             disabled={!selectedUserId}
-            className="bg-gray-800 px-4 rounded-lg font-black text-[10px] uppercase hover:bg-gray-700 transition-colors disabled:opacity-30"
+            className="bg-gray-800 px-6 rounded-xl font-black text-[10px] tracking-widest uppercase hover:bg-gray-700 hover:text-pink-500 transition-all disabled:opacity-30"
           >
             Add
           </button>
@@ -171,9 +164,9 @@ export function CreateTeamForm() {
       <button
         type="submit"
         disabled={isSubmitting || !teamName || members.length < 1}
-        className="w-full bg-white text-black font-black text-lg py-4 rounded-xl mt-8 hover:bg-pink-500 hover:text-white transition-all shadow-[0_0_20px_rgba(255,255,255,0.1)] disabled:opacity-50"
+        className="w-full bg-white text-black font-black text-sm tracking-[0.2em] py-5 rounded-xl mt-6 hover:bg-pink-500 hover:text-white transition-all shadow-[0_0_20px_rgba(255,255,255,0.1)] hover:shadow-[0_0_20px_rgba(219,39,119,0.3)] disabled:opacity-30 disabled:grayscale uppercase"
       >
-        {isSubmitting ? 'UPLOADING SQUAD...' : 'REGISTER TEAM'}
+        {isSubmitting ? 'UPLOADING...' : 'REGISTER TEAM'}
       </button>
     </form>
   );

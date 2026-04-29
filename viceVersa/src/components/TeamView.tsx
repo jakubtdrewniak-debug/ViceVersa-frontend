@@ -53,7 +53,7 @@ export function TeamView({ team }: TeamViewProps) {
       <div className="bg-[#1a1d24] rounded-2xl border border-gray-800 p-8 shadow-2xl flex flex-col md:flex-row items-center md:items-start gap-8 relative overflow-hidden">
         <div className="w-32 h-32 md:w-40 md:h-40 bg-[#0f1115] border-4 border-gray-800 rounded-2xl flex items-center justify-center shadow-xl shrink-0 overflow-hidden group">
           {team.avatar ? (
-            <img src={team.avatar} alt={team.name} className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500" />
+            <img src={team.avatar} alt="" referrerPolicy="no-referrer" className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500" />
           ) : (
             <span className="text-5xl font-black text-gray-800 uppercase">{team.name.charAt(0)}</span>
           )}
@@ -100,7 +100,7 @@ export function TeamView({ team }: TeamViewProps) {
                 className="flex items-center gap-3 p-3 bg-[#0f1115] rounded-xl border border-gray-800 hover:border-blue-500/50 hover:bg-blue-500/5 transition-all text-left group"
               >
                 <div className="w-8 h-8 rounded-lg bg-gray-900 border border-gray-800 overflow-hidden shrink-0">
-                  {player.avatar && <img src={player.avatar} alt={player.name} className="object-cover" />}
+                  {player.avatar && <img src={player.avatar} alt="" referrerPolicy="no-referrer" className="object-cover" />}
                 </div>
                 <span className="font-bold text-xs group-hover:text-blue-400 transition-colors">{player.name}</span>
               </button>
@@ -126,7 +126,7 @@ export function TeamView({ team }: TeamViewProps) {
               >
                 <div className="w-10 h-10 rounded-xl bg-gray-900 overflow-hidden shrink-0 border border-gray-800 shadow-inner">
                   {member.avatar ? (
-                    <img src={member.avatar} alt={member.name} className="w-full h-full object-cover" />
+                    <img src={member.avatar} alt="" referrerPolicy="no-referrer" className="w-full h-full object-cover" />
                   ) : (
                     <span className="flex items-center justify-center h-full text-xs font-black text-gray-700">{member.name[0]}</span>
                   )}

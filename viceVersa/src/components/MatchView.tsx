@@ -44,7 +44,7 @@ export function MatchView({ match, onSubmitResult, isSubmitting, isAdmin, onDele
 
         <div className={`flex-1 w-full bg-[#1a1d24] p-8 rounded-2xl flex flex-col items-center gap-4 border-2 transition-all ${isCompleted && match.winnerId === match.player1?.id ? 'border-yellow-500 shadow-[0_0_20px_rgba(234,179,8,0.2)]' : 'border-transparent'}`}>
           <div className={`w-24 h-24 bg-gray-800 flex items-center justify-center overflow-hidden shadow-lg border border-gray-700 ${match.player1?.isTeam ? 'rounded-xl' : 'rounded-full'}`}>
-            {match.player1?.avatar ? <img src={match.player1.avatar} className="w-full h-full object-cover" /> : <span className="text-3xl font-black text-gray-500">{match.player1?.name.charAt(0)}</span>}
+            {match.player1?.avatar ? <img src={match.player1.avatar} alt="" referrerPolicy="no-referrer" className="w-full h-full object-cover" /> : <span className="text-3xl font-black text-gray-500">{match.player1?.name.charAt(0)}</span>}
           </div>
           <h3 className="text-2xl font-black tracking-tight">{match.player1?.name}</h3>
 
@@ -63,7 +63,7 @@ export function MatchView({ match, onSubmitResult, isSubmitting, isAdmin, onDele
 
         <div className={`flex-1 w-full bg-[#1a1d24] p-8 rounded-2xl flex flex-col items-center gap-4 border-2 transition-all ${isCompleted && match.winnerId === match.player2?.id ? 'border-yellow-500 shadow-[0_0_20px_rgba(234,179,8,0.2)]' : 'border-transparent'}`}>
           <div className={`w-24 h-24 bg-gray-800 flex items-center justify-center overflow-hidden shadow-lg border border-gray-700 ${match.player2?.isTeam ? 'rounded-xl' : 'rounded-full'}`}>
-            {match.player2?.avatar ? <img src={match.player2.avatar} className="w-full h-full object-cover" /> : <span className="text-3xl font-black text-gray-500">{match.player2?.name.charAt(0)}</span>}
+            {match.player2?.avatar ? <img src={match.player2.avatar} alt="" referrerPolicy="no-referrer" className="w-full h-full object-cover" /> : <span className="text-3xl font-black text-gray-500">{match.player2?.name.charAt(0)}</span>}
           </div>
           <h3 className="text-2xl font-black tracking-tight">{match.player2?.name}</h3>
 

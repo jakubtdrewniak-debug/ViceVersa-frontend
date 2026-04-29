@@ -56,7 +56,7 @@ export function BracketTree({ matches }: Props) {
                           <div className="flex items-center gap-3 min-w-0">
                             <div className="w-8 h-8 bg-gray-900 rounded-lg border border-gray-700 flex items-center justify-center overflow-hidden shrink-0">
                               {match.player1?.avatar ? (
-                                <img src={match.player1.avatar} className="w-full h-full object-cover" alt="" onError={(e) => (e.currentTarget.style.display = 'none')} />
+                                <img src={match.player1.avatar} className="w-full h-full object-cover" alt="" referrerPolicy="no-referrer" onError={(e) => (e.currentTarget.style.display = 'none')} />
                               ) : null}
                               <span className="absolute text-[10px] text-gray-600 font-black">?</span>
                             </div>
@@ -73,7 +73,7 @@ export function BracketTree({ matches }: Props) {
                           <div className="flex items-center gap-3 min-w-0">
                             <div className="w-8 h-8 bg-gray-900 rounded-lg border border-gray-700 flex items-center justify-center overflow-hidden shrink-0">
                               {match.player2?.avatar ? (
-                                <img src={match.player2.avatar} className="w-full h-full object-cover" alt="" onError={(e) => (e.currentTarget.style.display = 'none')} />
+                                <img src={match.player2.avatar} className="w-full h-full object-cover" alt="" referrerPolicy="no-referrer" onError={(e) => (e.currentTarget.style.display = 'none')} />
                               ) : null}
                               <span className="absolute text-[10px] text-gray-600 font-black">?</span>
                             </div>

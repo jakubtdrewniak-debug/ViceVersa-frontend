@@ -9,24 +9,25 @@ export const Route = createFileRoute('/create-match')({
 function CreateMatchRoute() {
   return (
     <div className="min-h-screen bg-[#050505] text-white p-6 md:p-12 font-sans flex flex-col items-center justify-center">
-      <div className="w-full max-w-2xl space-y-6">
+      <div className="w-full max-w-lg space-y-6">
 
         <div className="flex justify-between items-end border-b border-[#1a1d24] pb-6">
           <div>
-            <h1 className="text-4xl font-black tracking-tighter uppercase">Create match</h1>
+            <h1 className="text-4xl font-black tracking-tighter uppercase italic">Initialize Match</h1>
             <p className="text-[10px] text-pink-500 font-black tracking-[0.3em] uppercase mt-1">
-              Standalone match
+              Standalone Simulation
             </p>
           </div>
           <Link
             to="/"
             className="text-gray-500 hover:text-white font-black text-[10px] uppercase tracking-widest transition-colors mb-1"
           >
-            Back to Dashboard
+            [ Cancel ]
           </Link>
         </div>
 
         <CreateMatch />
+
       </div>
     </div>
   )
