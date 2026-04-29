@@ -1,6 +1,6 @@
 import {useAuth0} from "@auth0/auth0-react";
 import {useMutation, useQuery, useQueryClient} from "@tanstack/react-query";
-import type {Team, TournamentDetails} from "../types.ts";
+import type {TeamDto, TournamentDto} from "../types.ts";
 
 const BASE_URL = "https://versa-backend-876198057788.europe-north2.run.app" +
   ""
@@ -8,7 +8,7 @@ export function AdminControlCenter() {
   const { getAccessTokenSilently } = useAuth0();
   const queryClient = useQueryClient();
 
-  const { data: teams = [], isLoading: isLoadingTeams} = useQuery<Team[]>({
+  const { data: teams = [], isLoading: isLoadingTeams} = useQuery<TeamDto[]>({
     queryKey: ["teams", "admin"],
     queryFn: async () => {
       const res = await fetch(`${BASE_URL}/api/teams`);
@@ -17,7 +17,7 @@ export function AdminControlCenter() {
     }
   });
 
-  const {data: tournaments = [], isLoading: isLoadingTournaments } = useQuery<TournamentDetails[]>({
+  const {data: tournaments = [], isLoading: isLoadingTournaments } = useQuery<TournamentDto[]>({
     queryKey: ["tournaments", "admin"],
     queryFn: async () => {
       const res = await fetch(`${BASE_URL}/api/tournaments`);
@@ -28,20 +28,19 @@ export function AdminControlCenter() {
 
   const deleteTeamMutation = useMutation({
     mutationFn: async (id: string) => {
-      // 🚨 GRAB THE AUTH0 TOKEN BEFORE THE REQUEST!
       const token = await getAccessTokenSilently();
 
       const res = await fetch(`${BASE_URL}/api/teams/${id}`, {
         method: 'DELETE',
         headers: {
-          'Authorization': `Bearer ${token}` // Show your VIP pass to Spring Boot
+          'Authorization': `Bearer ${token}`
         }
       });
 
       if (!res.ok) throw new Error(`Server Error: ${res.status}`);
     },
     onSuccess: () => {
-      // Tell React Query to refresh the table automatically
+
       queryClient.invalidateQueries({ queryKey: ['teams'] });
     },
     onError: (err) => {
@@ -68,9 +67,7 @@ export function AdminControlCenter() {
     }
   });
 
-  // ==========================================
-  // 3. HANDLERS
-  // ==========================================
+
   const handleDeleteTeam = (id: string) => {
     if (confirm("Are you sure? This will disband the team and remove all members.")) {
       deleteTeamMutation.mutate(id);
@@ -123,7 +120,6 @@ export function AdminControlCenter() {
         </div>
       </section>
 
-      {/* 2. Tournament & Match Management */}
       <section className="space-y-4">
         <h2 className="text-xl font-black uppercase tracking-widest text-blue-500 flex items-center gap-2">
           <span className="w-2 h-2 bg-blue-500 rounded-full animate-pulse"></span>
@@ -142,7 +138,7 @@ export function AdminControlCenter() {
             {tournaments.map(item => (
               <tr key={item.id} className="hover:bg-white/5 transition-colors">
                 <td className="px-6 py-4 font-bold text-white">{item.name}</td>
-                <td className="px-6 py-4 text-gray-400">{item.winner.name}</td>
+                <td className="px-6 py-4 text-gray-400">{item.winnerId}</td>
                 <td className="px-6 py-4 text-right">
                   <button
                     onClick={() => handleDeleteTournament(item.id)}
