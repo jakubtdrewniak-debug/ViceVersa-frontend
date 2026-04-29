@@ -1,87 +1,104 @@
 import { Link } from '@tanstack/react-router'
-import type { Match } from '../types'
+import type { MatchDto } from '../types'
 
 interface Props {
-  matches: Match[]
+  matches: MatchDto[]
 }
 
 export function BracketTree({ matches }: Props) {
   const matchesByRound = matches.reduce((acc, match) => {
-    if (match.round === null) return acc;
-
+    if (match.round === undefined || match.round === null) return acc;
     acc[match.round] = acc[match.round] || []
     acc[match.round].push(match)
-    return acc
-  }, {} as Record<number, Match[]>)
+    return acc;
+  }, {} as Record<number, MatchDto[]>)
 
-  const rounds = Object.keys(matchesByRound).map(Number).sort((a, b) => a - b)
+  const rounds = Object.keys(matchesByRound).map(Number).sort((a, b) => a - b);
+  const maxRound = Math.max(...rounds);
+
+
+  const matchCardHeight = 110;
+  const totalBracketHeight = 750;
+  const colWidth = 280;
+  const horizontalGap = 80;
+
 
   return (
-    <div className="w-full overflow-x-auto custom-scrollbar pb-8">
-      <div className="flex items-stretch gap-12 min-w-max min-h-[500px] px-4 pb-4 pt-12">
-        {rounds.map((roundNum, roundIndex) => (
-          <div key={roundNum} className="flex flex-col justify-around gap-6 w-64 relative">
+    <div className="w-full overflow-x-auto custom-scrollbar bg-[#0f1115] p-10">
+      <div className="flex items-start" style={{ gap: `${horizontalGap}px`, height: `${totalBracketHeight}px` }}>
+        {rounds.map((roundNum) => (
+          <div key={roundNum} style={{ width: `${colWidth}px` }} className="flex flex-col h-full">
 
-            <div className="absolute -top-8 left-0 w-full text-center">
-              <span className="text-pink-500 text-xs font-bold tracking-widest uppercase bg-[#0f1115] px-2">
-                Round {roundNum}
+            <div className="h-10 text-center mb-6 shrink-0">
+              <span className="text-pink-500 text-xs font-black tracking-widest uppercase opacity-80">
+                {roundNum === maxRound ? '🏆 Final' : `Round ${roundNum}`}
               </span>
             </div>
 
-            {matchesByRound[roundNum].map((match) => {
-              // Helper variables to make the JSX cleaner and avoid TS errors
-              const hasWinner = match.winner !== null && match.winner !== undefined;
-              const isP1Winner = hasWinner && match.winner?.id === match.player1?.id;
-              const isP2Winner = hasWinner && match.winner?.id === match.player2?.id;
+            <div className="flex-grow flex flex-col justify-around relative">
+              {matchesByRound[roundNum].map((match, matchIndex) => {
+                const isFinal = roundNum === maxRound;
 
-              return (
-                <div key={match.id} className="relative w-full">
+                return (
+                  <div key={match.id} className="relative w-full flex items-center">
 
-                  {roundIndex !== rounds.length - 1 && (
-                    <div className="absolute top-1/2 -right-12 w-12 h-px bg-gray-700 z-0"></div>
-                  )}
-
-                  <Link
-                    to="/match/$matchId"
-                    params={{ matchId: match.id }}
-                    className="relative z-10 block bg-[#1a1d24] border border-gray-800 rounded-lg p-3 hover:border-pink-500/50 transition-all shadow-lg group cursor-pointer"
-                  >
-                    {/* PLAYER 1 */}
-                    {/* 2. FIX: Safely check if a winner exists, and if it's NOT player 1, dim them */}
-                    <div className={`flex justify-between items-center mb-2 ${hasWinner && !isP1Winner ? 'opacity-40 grayscale' : ''}`}>
-                      <div className="flex items-center gap-2">
-                        <div className="w-6 h-6 bg-gray-700 flex items-center justify-center rounded-full overflow-hidden shrink-0">
-                          {match.player1?.avatar ? <img src={match.player1.avatar} alt="" className="w-full h-full object-cover" /> : <span className="text-[10px] font-bold">?</span>}
+                    <Link
+                      to="/match/$matchId"
+                      params={{ matchId: match.id }}
+                      className={`relative z-10 w-full bg-[#161920] border ${isFinal ? 'border-pink-500/50' : 'border-gray-800'} rounded shadow-lg overflow-hidden group hover:border-pink-500 transition-colors`}
+                      style={{ height: `${matchCardHeight}px` }}
+                    >
+                      <div className="flex justify-between items-center h-1/2 px-4 border-b border-gray-800/40">
+                        <div className="flex items-center gap-3 min-w-0">
+                          <div className="w-8 h-8 bg-gray-800 rounded-full border border-gray-700 flex items-center justify-center overflow-hidden shrink-0">
+                            {match.player1?.avatar ? <img src={match.player1.avatar} className="w-full h-full object-cover" /> : <span className="text-[10px] text-gray-500">?</span>}
+                          </div>
+                          <span className={`text-sm truncate ${match.winner?.id === match.player1?.id ? 'text-white font-bold' : 'text-gray-400'}`}>
+                            {match.player1?.name || 'TBD'}
+                          </span>
                         </div>
-                        <span className="font-bold text-sm text-white truncate max-w-[100px]">{match.player1?.name || 'TBD'}</span>
+                        <span className={`text-lg font-mono font-bold ${match.winner?.id === match.player1?.id ? 'text-pink-500' : 'text-gray-300'}`}>
+                           {match.score?.scoreP1 ?? 0}
+                        </span>
                       </div>
-                      <div className="flex items-center gap-2">
-                        {/* 3. FIX: Compare IDs, not the objects themselves */}
-                        {isP1Winner && <span className="text-yellow-500 text-[10px] uppercase font-bold">Win</span>}
-                        <span className="font-black text-gray-300">{match.score?.p1 ?? '-'}</span>
-                      </div>
-                    </div>
 
-                    <div className="h-px bg-gray-800 w-full my-2"></div>
-
-                    {/* PLAYER 2 */}
-                    <div className={`flex justify-between items-center ${hasWinner && !isP2Winner ? 'opacity-40 grayscale' : ''}`}>
-                      <div className="flex items-center gap-2">
-                        <div className="w-6 h-6 bg-gray-700 flex items-center justify-center rounded-full overflow-hidden shrink-0">
-                          {match.player2?.avatar ? <img src={match.player2.avatar} alt="" className="w-full h-full object-cover" /> : <span className="text-[10px] font-bold">?</span>}
+                      <div className="flex justify-between items-center h-1/2 px-4">
+                        <div className="flex items-center gap-3 min-w-0">
+                          <div className="w-8 h-8 bg-gray-800 rounded-full border border-gray-700 flex items-center justify-center overflow-hidden shrink-0">
+                            {match.player2?.avatar ? <img src={match.player2.avatar} className="w-full h-full object-cover" /> : <span className="text-[10px] text-gray-500">?</span>}
+                          </div>
+                          <span className={`text-sm truncate ${match.winner?.id === match.player2?.id ? 'text-white font-bold' : 'text-gray-400'}`}>
+                            {match.player2?.name || 'TBD'}
+                          </span>
                         </div>
-                        <span className="font-bold text-sm text-white truncate max-w-[100px]">{match.player2?.name || 'TBD'}</span>
+                        <span className={`text-lg font-mono font-bold ${match.winner?.id === match.player2?.id ? 'text-pink-500' : 'text-gray-300'}`}>
+                           {match.score?.scoreP2 ?? 0}
+                        </span>
                       </div>
-                      <div className="flex items-center gap-2">
-                        {isP2Winner && <span className="text-yellow-500 text-[10px] uppercase font-bold">Win</span>}
-                        <span className="font-black text-gray-300">{match.score?.p2 ?? '-'}</span>
-                      </div>
-                    </div>
-                  </Link>
+                    </Link>
 
-                </div>
-              )
-            })}
+                    {roundNum !== maxRound && (
+                      <div
+                        className="absolute pointer-events-none"
+                        style={{
+                          left: '100%',
+                          width: `${horizontalGap}px`,
+                          height: `${totalBracketHeight / (matchesByRound[roundNum].length * 2)}px`,
+                          top: matchIndex % 2 === 0 ? '50%' : 'auto',
+                          bottom: matchIndex % 2 !== 0 ? '50%' : 'auto',
+                        }}
+                      >
+                        <div className="absolute bg-gray-700" style={{ width: '50%', height: '1px', left: 0, top: matchIndex % 2 === 0 ? 0 : '100%' }} />
+                        <div className="absolute bg-gray-700" style={{ width: '1px', height: '100%', left: '50%', top: 0 }} />
+                        {matchIndex % 2 === 0 && (
+                          <div className="absolute bg-gray-700" style={{ width: '50%', height: '1px', right: 0, top: '100%' }} />
+                        )}
+                      </div>
+                    )}
+                  </div>
+                );
+              })}
+            </div>
           </div>
         ))}
       </div>
