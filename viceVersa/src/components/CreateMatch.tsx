@@ -12,7 +12,6 @@ export function CreateMatch() {
   const [player1Id, setPlayer1Id] = useState("")
   const [player2Id, setPlayer2Id] = useState("")
 
-  // 1. Matches your existing types exactly
   const [entryType, setEntryType] = useState<EntryType>("SOLO")
 
   const { data: users, isLoading: loadingUsers } = useQuery<UserDto[]>({
@@ -27,7 +26,6 @@ export function CreateMatch() {
 
   const { mutate: deployMatch, isPending: isSubmitting } = useMutation({
     mutationFn: (payload: any) =>
-      // 2. Added '/exhibitions' to match Java: @PostMapping("/exhibitions")
       callApi('/matches/exhibitions', {
         method: 'POST',
         body: JSON.stringify(payload)
@@ -41,7 +39,6 @@ export function CreateMatch() {
 
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault()
-    // 3. Payload now perfectly matches Java's CreateMatchDto fields
     deployMatch({
       type: entryType,
       player1Id,

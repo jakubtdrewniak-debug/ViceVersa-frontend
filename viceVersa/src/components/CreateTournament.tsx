@@ -65,7 +65,7 @@ export function CreateTournament() {
     onSuccess: (data) => {
       toast.success(`Tournament "${data.name}" is officially LIVE!`);
       queryClient.invalidateQueries({ queryKey: ["tournaments"] });
-      navigate({ to: `/tournament/${data.id}` }); // Assuming you have a bracket view
+      navigate({ to: `/tournament/${data.id}` });
     },
     onError: (err: Error) => {
       toast.error(`Initialization Failed: ${err.message}`);

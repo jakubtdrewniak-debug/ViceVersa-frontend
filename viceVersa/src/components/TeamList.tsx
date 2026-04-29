@@ -38,7 +38,7 @@ export function TeamList({ filter }: TeamListProps) {
     return (
       <div className="bg-red-900/10 border border-red-500/20 p-8 rounded-xl text-center">
         <p className="text-red-500 font-bold uppercase text-xs tracking-widest">
-          Failed to establish uplink with Team Directory
+          Failed to fetch teams.
         </p>
       </div>
     )

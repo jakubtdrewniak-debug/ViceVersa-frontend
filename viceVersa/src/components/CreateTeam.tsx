@@ -30,6 +30,7 @@ export function CreateTeamForm() {
         avatar: user.picture,
         email: user.email || "",
       };
+      // eslint-disable-next-line react-hooks/set-state-in-effect
       setMembers([captain]);
     }
   }, [isAuthenticated, user, members.length]);
@@ -101,7 +102,6 @@ export function CreateTeamForm() {
         <p className="text-gray-500 text-[10px] font-bold tracking-[0.3em] uppercase">Vice Versa Roster Management</p>
       </div>
 
-      {/* Team Name */}
       <div className="space-y-2">
         <label className="text-pink-500 text-[10px] font-black tracking-widest uppercase">Team Name</label>
         <input
@@ -151,7 +151,7 @@ export function CreateTeamForm() {
           >
             <option value="">{loadingUsers ? "Loading players..." : "Recruit Player..."}</option>
             {availableUsers
-              .filter(u => u.id !== user?.sub) // Hide current user (already captain)
+              .filter(u => u.id !== user?.sub)
               .map(u => (
                 <option key={u.id} value={u.id}>{u.name}</option>
               ))
