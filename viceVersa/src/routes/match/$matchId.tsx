@@ -1,12 +1,10 @@
 import { createFileRoute, useNavigate } from '@tanstack/react-router'
+import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
+import { useAuth0 } from '@auth0/auth0-react' // 👈 Added
+import { toast } from 'react-toastify'
 import { MatchView } from '../../components/MatchView'
-import { useState } from 'react'
-import {
-  MOCK_LIVE_TOURNAMENT,
-  MOCK_COMPLETED_TOURNAMENT,
-  MOCK_MY_MATCHES
-} from '../../lib/mockData'
-import type { Match, Participant, TournamentDetails } from '../../types'
+import { useApi } from '../../hooks/useApi'
+import type { MatchDto } from '../../types'
 
 export const Route = createFileRoute('/match/$matchId')({
   component: MatchRoute,
@@ -16,79 +14,55 @@ export const Route = createFileRoute('/match/$matchId')({
 function MatchRoute() {
   const { matchId } = Route.useParams()
   const navigate = useNavigate()
-  const [isSubmitting, setIsSubmitting] = useState(false)
+  const { callApi } = useApi()
+  const queryClient = useQueryClient()
+  const { user } = useAuth0()
 
-  const tournamentPool: (TournamentDetails | null)[] = [
-    MOCK_LIVE_TOURNAMENT,
-    MOCK_COMPLETED_TOURNAMENT
-  ]
+  const roles = (user?.['https://viceversa.dev/roles'] as string[]) || []
+  const isAdmin = roles.includes('admin')
 
-  let matchData: Match | undefined = undefined
+  const { data: matchData, isLoading } = useQuery<MatchDto>({
+    queryKey: ['match', matchId],
+    queryFn: () => callApi(`/matches/${matchId}`),
+  })
 
-  for (const tourney of tournamentPool) {
-    if (tourney?.matches) {
-      const found = tourney.matches.find(
-        (m: Match) => m.id.toString() === matchId
-      )
-      if (found) {
-        matchData = found
-        break
-      }
-    }
-  }
-
-  if (!matchData) {
-    matchData = MOCK_MY_MATCHES.find(
-      (m: Match) => m.id.toString() === matchId
-    )
-  }
-
-  const handleResultSubmit = async (winner: Participant | null, finalScore: { p1: number, p2: number }) => {
-    setIsSubmitting(true)
-
-    const allMatches = [
-      ...(MOCK_LIVE_TOURNAMENT?.matches || []),
-      ...(MOCK_COMPLETED_TOURNAMENT?.matches || []),
-      ...(MOCK_MY_MATCHES || [])
-    ]
-
-    const targetMatch = allMatches.find((m: Match) => m.id.toString() === matchId)
-
-    if (targetMatch) {
-      targetMatch.winner = winner ?? null
-      targetMatch.score = finalScore
-      targetMatch.status = 'Completed'
-    }
-
-    await new Promise(resolve => setTimeout(resolve, 800))
-
-    if (targetMatch?.tournamentId) {
-      navigate({ to: `/tournament/${targetMatch.tournamentId}` })
-    } else {
+  const deleteMutation = useMutation({
+    mutationFn: () => callApi(`/matches/${matchId}`, { method: 'DELETE' }),
+    onSuccess: () => {
+      toast.success("Match purged from history.")
+      queryClient.invalidateQueries({ queryKey: ['matches'] })
       navigate({ to: '/my-history' })
-    }
-  }
+    },
+    onError: (err: Error) => toast.error(`Purge failed: ${err.message}`)
+  })
 
-  if (!matchData) {
-    return (
-      <div className="min-h-screen bg-[#050505] text-white flex items-center justify-center font-sans">
-        <div className="bg-[#1a1d24] p-10 rounded-2xl border border-red-900/50 text-center">
-          <h2 className="text-xl font-black text-red-500 mb-2">Match Not Found</h2>
-          <p className="text-gray-500 mb-6">ID: {matchId}</p>
-          <button onClick={() => window.history.back()} className="text-pink-500 font-bold hover:underline">
-            Go Back
-          </button>
-        </div>
-      </div>
-    )
-  }
+  const submitResultMutation = useMutation({
+    mutationFn: (payload: { winnerId: string | null; score: { p1: number; p2: number } }) => {
+      return callApi(`/matches/${matchId}/score`, {
+        method: 'PUT',
+        body: JSON.stringify(payload.score)
+      })
+    },
+    onSuccess: () => {
+      toast.success("Results recorded.")
+      queryClient.invalidateQueries({ queryKey: ['match', matchId] })
+    }
+  })
+
+  if (isLoading) return <div className="text-pink-500 p-20 animate-pulse text-center">ACCESSING...</div>
 
   return (
-    <div className="min-h-screen bg-[#050505] flex flex-col items-center justify-center p-6">
+    <div className="min-h-screen bg-[#050505] flex items-center justify-center p-6">
       <MatchView
-        match={matchData}
-        onSubmitResult={handleResultSubmit}
-        isSubmitting={isSubmitting}
+        match={matchData!}
+        onSubmitResult={(winnerId, score) => submitResultMutation.mutate({ winnerId, score })}
+        isSubmitting={submitResultMutation.isPending}
+        isAdmin={isAdmin}
+        onDelete={() => {
+          if (window.confirm("CRITICAL: Purge this match record forever?")) {
+            deleteMutation.mutate()
+          }
+        }}
       />
     </div>
   )

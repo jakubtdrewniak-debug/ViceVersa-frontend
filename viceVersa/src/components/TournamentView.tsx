@@ -12,13 +12,13 @@ export function TournamentView({ tournamentId }: Props) {
   const { callApi } = useApi();
   const [activeTab, setActiveTab] = useState<'bracket' | 'participants'>('bracket');
 
-  // --- 1. FETCH TOURNAMENT DETAILS (Includes Matches & Added Error Catching) ---
+
   const { data: tournament, isLoading: loadingTourney, error: tourneyError } = useQuery<TournamentDto>({
     queryKey: ["tournament", tournamentId],
     queryFn: () => callApi(`/tournaments/${tournamentId}`),
   });
 
-  // --- 2. FETCH PARTICIPANTS (Added Error Catching) ---
+
   const { data: participants = [], isLoading: loadingParts, error: partsError } = useQuery<ParticipantDto[]>({
     queryKey: ["tournament", tournamentId, "participants"],
     queryFn: () => callApi(`/tournaments/${tournamentId}/participants`),
@@ -34,7 +34,7 @@ export function TournamentView({ tournamentId }: Props) {
     );
   }
 
-  // 🚨 NEW ERROR UI: This will tell us exactly what went wrong
+
   if (tourneyError || partsError) {
     return (
       <div className="text-center p-10 text-red-500 font-bold bg-[#1a1d24] rounded-2xl border border-red-500/20 max-w-2xl mx-auto mt-10">
@@ -61,7 +61,7 @@ export function TournamentView({ tournamentId }: Props) {
   return (
     <div className="bg-[#0f1115] text-white p-8 rounded-2xl w-full max-w-5xl mx-auto space-y-6 font-sans border border-[#1a1d24] shadow-2xl">
 
-      {/* --- HEADER --- */}
+
       <div className="border-b border-gray-800 pb-6">
         <div className="flex justify-between items-start mb-3">
           <h1 className="text-3xl font-black text-white tracking-tight uppercase">{tournament.name}</h1>
@@ -83,7 +83,7 @@ export function TournamentView({ tournamentId }: Props) {
         </div>
       </div>
 
-      {/* --- TABS NAVIGATION --- */}
+
       <div className="flex gap-2 bg-[#1a1d24] p-1 rounded-lg w-fit border border-gray-800">
         <button
           onClick={() => setActiveTab('bracket')}
@@ -103,9 +103,6 @@ export function TournamentView({ tournamentId }: Props) {
         </button>
       </div>
 
-      {/* ========================================= */}
-      {/* TAB CONTENT: BRACKET */}
-      {/* ========================================= */}
       {activeTab === 'bracket' && (
         <div className="pt-4 min-h-[400px]">
           {matches.length === 0 ? (
@@ -124,9 +121,6 @@ export function TournamentView({ tournamentId }: Props) {
         </div>
       )}
 
-      {/* ========================================= */}
-      {/* TAB CONTENT: PARTICIPANTS ROSTER */}
-      {/* ========================================= */}
       {activeTab === 'participants' && (
         <div className="pt-4 grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4">
           {participants.length === 0 && (

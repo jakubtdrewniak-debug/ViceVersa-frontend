@@ -17,8 +17,8 @@ export interface ParticipantDto {
   members?: UserDto[];
 }
 export interface MatchScoreDto {
-  scoreP1: number;
-  scoreP2: number;
+  p1: number;
+  p2: number;
 }
 export interface TeamDto {
   id: string;
@@ -36,7 +36,7 @@ export interface MatchDto {
   status: MatchStatus;
   player1: ParticipantDto | null;
   player2: ParticipantDto | null;
-  winner: ParticipantDto | null;
+  winnerId: string | null;
   score: MatchScoreDto;
   player1Slot: boolean;
   nextMatchId: string | null;
