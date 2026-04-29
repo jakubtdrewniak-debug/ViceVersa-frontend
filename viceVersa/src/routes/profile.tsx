@@ -51,11 +51,11 @@ function ProfileRoute() {
                 <img
                   src={user.picture}
                   alt="" referrerPolicy="no-referrer"
-                  className="w-full h-full object-cover"
+                  className="w-full h-full object-cover relative z-10"
                   onError={(e) => (e.currentTarget.style.display = 'none')}
                 />
               ) : null}
-              <span className="absolute text-4xl font-black text-gray-800 uppercase">
+              <span className="absolute text-4xl font-black text-gray-800 uppercase z-0">
                 {user.name?.[0] || user.email?.[0]}
               </span>
             </div>

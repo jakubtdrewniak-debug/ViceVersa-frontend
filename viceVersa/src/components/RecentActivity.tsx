@@ -33,11 +33,23 @@ export function RecentActivity() {
     if (tournamentsError) toast.error(`Archive Error: ${tournamentsErrorData instanceof Error ? tournamentsErrorData.message : 'Fetch failed'}`)
   }, [matchesError, tournamentsError, matchErrorData, tournamentsErrorData])
 
-  const renderCompetitor = (p: ParticipantDto | null, isWinner: boolean) => {
+  const getWinnerId = (m: MatchDto): string | null | undefined => {
+    if (m.winner?.id) return m.winner.id;
+    if (!m.score) return null;
+
+    const p1Score = Number(m.score.p1) || 0;
+    const p2Score = Number(m.score.p2) || 0;
+
+    if (p1Score > p2Score) return m.player1?.id;
+    if (p2Score > p1Score) return m.player2?.id;
+    return null;
+  }
+
+  const renderCompetitor = (p: ParticipantDto | null, isWinner: boolean, reverse = false) => {
     if (!p) return <span className="text-gray-700 italic font-black text-[10px] uppercase">TBD</span>
 
     return (
-      <div className="flex items-center gap-2 min-w-0">
+      <div className={`flex items-center gap-2 min-w-0 ${reverse ? 'flex-row-reverse' : ''}`}>
         <div className={`w-6 h-6 shrink-0 bg-gray-900 border border-gray-800 overflow-hidden flex items-center justify-center ${p.isTeam ? 'rounded-md' : 'rounded-full'}`}>
           {p.avatar ? (
             <img src={p.avatar} alt="" referrerPolicy="no-referrer" className="w-full h-full object-cover" />
@@ -77,34 +89,38 @@ export function RecentActivity() {
               <p className="text-gray-600 font-black uppercase text-[10px] tracking-widest">No match logs detected in current sector</p>
             </div>
           ) : (
-            matches.map((match) => (
-              <div key={match.id} className="bg-[#0f1115] border border-gray-800 p-4 rounded-xl flex items-center justify-between hover:border-pink-500/30 transition-all group shadow-xl">
-                <div className="flex items-center gap-4 flex-1 min-w-0">
-                  <div className="flex-1 min-w-0 text-right">
-                    {renderCompetitor(match.player1, match.winnerId === match.player1?.id)}
-                  </div>
-                  <span className="text-[9px] font-black text-gray-700 italic px-2">VS</span>
-                  <div className="flex-1 min-w-0">
-                    {renderCompetitor(match.player2, match.winnerId === match.player2?.id)}
-                  </div>
-                </div>
+            matches.map((match) => {
+              const actualWinnerId = getWinnerId(match);
 
-                <div className="flex items-center gap-4 ml-6">
-                  <div className="bg-black/40 px-3 py-1.5 rounded-lg border border-gray-800 font-mono text-xs font-black text-pink-500 shadow-inner">
-                    {match.score.p1} : {match.score.p2}
+              return (
+                <div key={match.id} className="bg-[#0f1115] border border-gray-800 p-4 rounded-xl flex items-center justify-between hover:border-pink-500/30 transition-all group shadow-xl">
+                  <div className="flex items-center gap-4 flex-1 min-w-0">
+                    <div className="flex-1 min-w-0 flex justify-end">
+                      {renderCompetitor(match.player1, actualWinnerId === match.player1?.id, true)}
+                    </div>
+                    <span className="text-[9px] font-black text-gray-700 italic px-2">VS</span>
+                    <div className="flex-1 min-w-0">
+                      {renderCompetitor(match.player2, actualWinnerId === match.player2?.id)}
+                    </div>
                   </div>
-                  <Link
-                    to="/match/$matchId"
-                    params={{ matchId: match.id }}
-                    className="bg-gray-800 hover:bg-pink-600 text-white p-2 rounded-lg transition-all group-hover:shadow-[0_0_15px_rgba(219,39,119,0.3)]"
-                  >
-                    <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M9 5l7 7-7 7" />
-                    </svg>
-                  </Link>
+
+                  <div className="flex items-center gap-4 ml-6">
+                    <div className="bg-black/40 px-3 py-1.5 rounded-lg border border-gray-800 font-mono text-xs font-black text-pink-500 shadow-inner shrink-0">
+                      {match.score?.p1 ?? 0} : {match.score?.p2 ?? 0}
+                    </div>
+                    <Link
+                      to="/match/$matchId"
+                      params={{ matchId: match.id }}
+                      className="bg-gray-800 hover:bg-pink-600 text-white p-2 rounded-lg transition-all group-hover:shadow-[0_0_15px_rgba(219,39,119,0.3)] shrink-0"
+                    >
+                      <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M9 5l7 7-7 7" />
+                      </svg>
+                    </Link>
+                  </div>
                 </div>
-              </div>
-            ))
+              )
+            })
           )}
         </div>
       </section>
@@ -142,7 +158,7 @@ export function RecentActivity() {
                   <Link
                     to="/tournament/$tournamentId"
                     params={{ tournamentId: t.id }}
-                    className="bg-gray-800 hover:bg-blue-600 text-white px-5 py-2.5 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all border border-gray-700"
+                    className="bg-gray-800 hover:bg-blue-600 text-white px-5 py-2.5 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all border border-gray-700 shrink-0"
                   >
                     Enter Bracket
                   </Link>

@@ -105,7 +105,6 @@ export function CreateMatch() {
            </span>
         </div>
 
-        {/* PLAYER 2 */}
         <div className="space-y-3">
           <label className="text-gray-500 text-[10px] font-black tracking-widest uppercase ml-1">Competitor 2</label>
           <select
